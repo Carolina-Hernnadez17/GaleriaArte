@@ -1,0 +1,104 @@
+﻿@model List<GaleriaArte.Models.locacion>
+
+@{
+    ViewData["Title"] = "Administración de Locaciones";
+}
+
+<div class="container">
+    <h2 class="text-center my-4">Administración de Locaciones</h2>
+
+    <div class="card shadow p-4">
+        <h4 id="form-title">Agregar Nueva Locación</h4>
+        <form id="locacionForm" asp-action="AgregarLocacion" asp-controller="Locacion" method="post">
+            <input type="hidden" id="Id_Locacion" name="Id_Locacion" />
+
+            <div class="mb-3">
+                <label for="Ciudad" class="form-label">Ciudad</label>
+                <input type="text" class="form-control" id="Ciudad" name="Ciudad" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="Direccion" class="form-label">Dirección</label>
+                <input type="text" class="form-control" id="Direccion" name="Direccion" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submitButton">Agregar</button>
+            <button type="button" class="btn btn-secondary d-none" id="cancelButton">Cancelar</button>
+        </form>
+    </div>
+
+    <div class="alert alert-danger mt-3 d-none" id="error-message"></div>
+
+    <table class="table table-striped mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Ciudad</th>
+                <th>Dirección</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var loc in Model)
+            {
+                <tr id="row-@loc.Id_Locacion">
+                    <td>@loc.Id_Locacion</td>
+                    <td>@loc.Ciudad</td>
+                    <td>@loc.Direccion</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm editButton" data-id="@loc.Id_Locacion" data-ciudad="@loc.Ciudad" data-direccion="@loc.Direccion">Editar</button>
+                        <form asp-action="EliminarLocacion" asp-controller="Locacion" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@loc.Id_Locacion" />
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta locación?')">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("locacionForm");
+        const submitButton = document.getElementById("submitButton");
+        const cancelButton = document.getElementById("cancelButton");
+        const formTitle = document.getElementById("form-title");
+        const ciudadInput = document.getElementById("Ciudad");
+        const direccionInput = document.getElementById("Direccion");
+        const idInput = document.getElementById("Id_Locacion");
+
+        // Botón de cancelar edición
+        cancelButton.addEventListener("click", function () {
+            resetForm();
+        });
+
+        // Manejar edición de locación
+        document.querySelectorAll(".editButton").forEach(button => {
+            button.addEventListener("click", function () {
+                const id = this.getAttribute("data-id");
+                const ciudad = this.getAttribute("data-ciudad");
+                const direccion = this.getAttribute("data-direccion");
+
+                idInput.value = id;
+                ciudadInput.value = ciudad;
+                direccionInput.value = direccion;
+
+                form.action = "/Locacion/EditarLocacion";
+                submitButton.textContent = "Actualizar";
+                cancelButton.classList.remove("d-none");
+                formTitle.textContent = "Editar Locación";
+            });
+        });
+
+        function resetForm() {
+            idInput.value = "";
+            ciudadInput.value = "";
+            direccionInput.value = "";
+            form.action = "/Locacion/AgregarLocacion";
+            submitButton.textContent = "Agregar";
+            cancelButton.classList.add("d-none");
+            formTitle.textContent = "Agregar Nueva Locación";
+        }
+    });
+</script>

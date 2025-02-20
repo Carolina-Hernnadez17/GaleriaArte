@@ -1,0 +1,75 @@
+﻿
+@* @if (ViewBag.Mensaje != null)
+{
+    <div class="alert alert-info">
+        @ViewBag.Mensaje
+    </div>
+} *@
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="container-fluid bg-black text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <img src="~/img/renaissance-art.jpg" class="img-fluid rounded" alt="Renaissance Art">
+            </div>
+            <div class="col-md-6">
+                <h1 class="display-4 fw-bold">Renaissance Portrait Masters</h1>
+                <p class="text-success">June 25 / August 4 2024</p>
+                <p>Descubre las obras maestras del Renacimiento. Explora retratos de los grandes maestros en esta exclusiva exhibición.</p>
+                <button class="btn btn-outline-success">Learn More</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección de Eventos -->
+<div class="container my-5">
+    <h2 class="text-white">Our Events</h2>
+    <p class="text-muted">Descubre los próximos eventos de arte y cultura.</p>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card bg-dark text-white">
+                <img src="~/img/classic-art.jpg" class="card-img-top" alt="Classic Art">
+                <div class="card-body">
+                    <h5 class="card-title">The History of Classic Art</h5>
+                    <p>New York • May 3, 2024 - June 2, 2024</p>
+                    <p class="fw-bold">$53</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark text-white">
+                <img src="~/img/south-asian-art.jpg" class="card-img-top" alt="South Asian Art">
+                <div class="card-body">
+                    <h5 class="card-title">South Asian Modern Art</h5>
+                    <p>New York • April 1, 2024 - May 2, 2024</p>
+                    <p class="fw-bold">$65</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark text-white">
+                <img src="~/img/reflection-art.jpg" class="card-img-top" alt="Reflection on Art">
+                <div class="card-body">
+                    <h5 class="card-title">Reflection on Colour and Form</h5>
+                    <p>New York • March 1, 2024</p>
+                    <p class="fw-bold">$45</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Newsletter -->
+<div class="container-fluid bg-dark text-white py-5">
+    <div class="container text-center">
+        <h3>Enter Your Email Address</h3>
+        <input type="email" class="form-control w-50 mx-auto my-3" placeholder="Your email...">
+        <button class="btn btn-outline-success">Subscribe</button>
+    </div>
+</div>
