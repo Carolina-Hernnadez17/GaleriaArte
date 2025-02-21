@@ -2,7 +2,7 @@
 
 namespace GaleriaArte.Models
 {
-    public class expocision
+    public class exposicion
     {
         [Key]
         public int id_exposicion { get; set; }
