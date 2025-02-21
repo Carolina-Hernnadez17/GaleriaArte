@@ -8,8 +8,8 @@ namespace GaleriaArte.Controllers
     public class ExposicionController : Controller
     {
         private ConexionGallery conexion = new ConexionGallery();
-        // Método para listar exposiciones con JOIN a locación y obra
-        public ActionResult Exposiciones_Admin()
+        
+        public ActionResult exposiciones_admin()
         {
             List<exposicion> lista = new List<exposicion>();
 
