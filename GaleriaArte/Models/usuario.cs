@@ -33,5 +33,6 @@ namespace GaleriaArte.Models
         public bool Tipo_Usuario { get; set; } = false;
 
         public bool Estado { get; set; } = true;
+        //jiji
     }
 }
