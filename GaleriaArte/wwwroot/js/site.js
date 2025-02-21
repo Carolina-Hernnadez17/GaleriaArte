@@ -1,4 +1,19 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿
+const cards = document.querySelectorAll('.card-animation');
 
-// Write your JavaScript code.
+// Función que se ejecutará cuando las cards sean visibles
+const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+            observer.unobserve(entry.target); 
+        }
+    });
+}, {
+    threshold: 0.5 
+});
+
+cards.forEach(card => {
+    observer.observe(card);
+});
+

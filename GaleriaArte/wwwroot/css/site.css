@@ -50,3 +50,71 @@ input[type="email"] {
     padding: 10px;
     border-radius: 5px;
 }
+
+.superpuesta {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease-in-out;
+}
+
+.superpuesta:hover {
+        transform: scale(1.05);
+}
+
+
+/* Animación de desvanecimiento y desplazamiento para las cards */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card-animation {
+    opacity: 0; 
+    transform: translateY(30px); 
+    transition: all 0.6s ease-out;
+}
+
+.card-animation.animate {
+    opacity: 1;
+     transform: translateY(0);
+}
+
+/* Efecto de zoom en las imágenes al pasar el mouse */
+.artwork-img {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.artwork-img:hover {
+    transform: scale(1.05); 
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2); 
+}
+.carousel-inner img {
+    width: 100%;
+    height: auto; 
+    max-height: 400px; 
+    object-fit: contain; 
+}
+.d-flex {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px; 
+    
+}
+.carousel-image {
+    width: 100%; 
+    max-height: 500px; 
+    object-fit: cover;
+}
+
+
+
+
+
+
+
