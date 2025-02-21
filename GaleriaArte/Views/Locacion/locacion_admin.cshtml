@@ -4,101 +4,138 @@
     ViewData["Title"] = "Administración de Locaciones";
 }
 
-<div class="container">
-    <h2 class="text-center my-4">Administración de Locaciones</h2>
+<head>
+    <link rel="stylesheet" href="~/css/locacionStyle.css" asp-append-version="true" />
+</head>
 
-    <div class="card shadow p-4">
-        <h4 id="form-title">Agregar Nueva Locación</h4>
-        <form id="locacionForm" asp-action="AgregarLocacion" asp-controller="Locacion" method="post">
-            <input type="hidden" id="Id_Locacion" name="Id_Locacion" />
 
-            <div class="mb-3">
+<h2 class="text-center my-4">Administración de Locaciones</h2>
+<div class="container-AddLocation ">
+    
+    <div class="section-table ">
+        <table class="table table-striped mt-4 ">
+            <thead class="table-dark ">
+                <tr>
+                    <th>ID</th>
+                    <th>Ciudad</th>
+                    <th>Dirección</th>
+                    <th>Latitud</th>
+                    <th>Longitud</th>
+                    <th class="th-action ">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var loc in Model)
+                {
+                    <tr class="section-bodyTable">
+                        <td>@loc.id_Locacion</td>
+                        <td>@loc.ciudad</td>
+                        <td>@loc.direccion</td>
+                        <td>@loc.latitud</td>
+                        <td>@loc.longitud</td>
+                        <td class="section-button">
+                            <div class="section_editButton">
+                                <button class="btn btn-warning btn-sm editButton" data-bs-toggle="modal" data-bs-target="#editModal"
+                                        data-id="@loc.id_Locacion" data-ciudad="@loc.ciudad"
+                                        data-direccion="@loc.direccion" data-latitud="@loc.latitud" data-longitud="@loc.longitud">
+                                    Editar
+                                </button>
+                            </div>
+
+                            <div class="section_deleteButton">
+                                <form asp-action="EliminarLocacion" asp-controller="Locacion" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@loc.id_Locacion" />
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de editar esta locación?')">Eliminar</button>
+                                </form>
+                            </div>
+
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <div class="section-add card shadow">
+        <h4 >Agregar Nueva Locación</h4>
+        <form asp-action="AgregarLocacion" asp-controller="Locacion" method="post" class="form_agregar_locacion">
+            <div class="mb-5 d-flex">
                 <label for="Ciudad" class="form-label">Ciudad</label>
-                <input type="text" class="form-control" id="Ciudad" name="Ciudad" required />
+                <input type="text" class="form-control-add" id="Ciudad" name="Ciudad" required />
             </div>
-
-            <div class="mb-3">
+            <div class="mb-5 d-flex">
                 <label for="Direccion" class="form-label">Dirección</label>
-                <input type="text" class="form-control" id="Direccion" name="Direccion" required />
+                <input type="text" class="form-control-add " id="Direccion" name="Direccion" required />
             </div>
-
-            <button type="submit" class="btn btn-primary" id="submitButton">Agregar</button>
-            <button type="button" class="btn btn-secondary d-none" id="cancelButton">Cancelar</button>
+            <div class="mb-5 d-flex">
+                <label for="Longitud" class="form-label">Longitud</label>
+                <input type="text" class="form-control-add" id="Longitud" name="Longitud" required />
+            </div>
+            <div class="mb-5 d-flex">
+                <label for="Latitud" class="form-label">Latitud</label>
+                <input type="text" class="form-control-add " id="Latitud" name="Latitud" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Agregar</button>
         </form>
     </div>
 
-    <div class="alert alert-danger mt-3 d-none" id="error-message"></div>
+    
+    
+</div>
 
-    <table class="table table-striped mt-4">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Ciudad</th>
-                <th>Dirección</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var loc in Model)
-            {
-                <tr id="row-@loc.Id_Locacion">
-                    <td>@loc.Id_Locacion</td>
-                    <td>@loc.Ciudad</td>
-                    <td>@loc.Direccion</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm editButton" data-id="@loc.Id_Locacion" data-ciudad="@loc.Ciudad" data-direccion="@loc.Direccion">Editar</button>
-                        <form asp-action="EliminarLocacion" asp-controller="Locacion" method="post" class="d-inline">
-                            <input type="hidden" name="id" value="@loc.Id_Locacion" />
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta locación?')">Eliminar</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<!-- Modal de Edición -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Editar Locación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="EditarLocacion" asp-controller="Locacion" method="post">
+                    <input type="hidden" id="editId_Locacion" name="Id_Locacion" />
+                    <div class="mb-3">
+                        <label for="editCiudad" class="form-label">Ciudad</label>
+                        <input type="text" class="form-control" id="editCiudad" name="Ciudad" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDireccion" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" id="editDireccion" name="Direccion" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editLatitud" class="form-label">Latitud</label>
+                        <input type="text" class="form-control" id="editLatitud" name="Latitud" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editLongitud" class="form-label">Longitud</label>
+                        <input type="text" class="form-control" id="editLongitud" name="Longitud" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const form = document.getElementById("locacionForm");
-        const submitButton = document.getElementById("submitButton");
-        const cancelButton = document.getElementById("cancelButton");
-        const formTitle = document.getElementById("form-title");
-        const ciudadInput = document.getElementById("Ciudad");
-        const direccionInput = document.getElementById("Direccion");
-        const idInput = document.getElementById("Id_Locacion");
-
-        // Botón de cancelar edición
-        cancelButton.addEventListener("click", function () {
-            resetForm();
-        });
-
-        // Manejar edición de locación
         document.querySelectorAll(".editButton").forEach(button => {
             button.addEventListener("click", function () {
-                const id = this.getAttribute("data-id");
-                const ciudad = this.getAttribute("data-ciudad");
-                const direccion = this.getAttribute("data-direccion");
-
-                idInput.value = id;
-                ciudadInput.value = ciudad;
-                direccionInput.value = direccion;
-
-                form.action = "/Locacion/EditarLocacion";
-                submitButton.textContent = "Actualizar";
-                cancelButton.classList.remove("d-none");
-                formTitle.textContent = "Editar Locación";
+                document.getElementById("editId_Locacion").value = this.getAttribute("data-id");
+                document.getElementById("editCiudad").value = this.getAttribute("data-ciudad");
+                document.getElementById("editDireccion").value = this.getAttribute("data-direccion");
+                document.getElementById("editLatitud").value = this.getAttribute("data-latitud");
+                document.getElementById("editLongitud").value = this.getAttribute("data-longitud");
             });
         });
-
-        function resetForm() {
-            idInput.value = "";
-            ciudadInput.value = "";
-            direccionInput.value = "";
-            form.action = "/Locacion/AgregarLocacion";
-            submitButton.textContent = "Agregar";
-            cancelButton.classList.add("d-none");
-            formTitle.textContent = "Agregar Nueva Locación";
-        }
+        
     });
 </script>
+
+
+
+
+

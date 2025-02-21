@@ -2,9 +2,12 @@
 {
     public class locacion
     {
-        public int Id_Locacion { get; set; }
-        public string Ciudad { get; set; }
-        public string Direccion { get; set; }
+        public int id_Locacion { get; set; }
+        public string ciudad { get; set; }
+        public string direccion { get; set; }
+
+        public string latitud { get; set; }
+        public string longitud { get; set; }
 
     }
 }

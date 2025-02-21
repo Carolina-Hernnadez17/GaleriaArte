@@ -30,9 +30,11 @@ namespace GaleriaArte.Controllers
                     {
                         lista.Add(new locacion
                         {
-                            Id_Locacion = Convert.ToInt32(reader["id_locacion"]),
-                            Ciudad = reader["ciudad"].ToString(),
-                            Direccion = reader["direccion"].ToString()
+                            id_Locacion = Convert.ToInt32(reader["id_locacion"]),
+                            ciudad = reader["ciudad"].ToString(),
+                            direccion = reader["direccion"].ToString(),
+                            latitud = reader["latitud"].ToString(),
+                            longitud = reader["longitud"].ToString()
                         });
                     }
                     reader.Close();
@@ -47,94 +49,78 @@ namespace GaleriaArte.Controllers
         }
 
         // Método para mostrar el formulario de agregar
-        public ActionResult Crear()
+        public ActionResult agregar()
         {
-            return View();
+            return View("locacion");
         }
 
         // Método para procesar la creación
         [HttpPost]
-        public ActionResult Crear(locacion locacion)
+        public ActionResult AgregarLocacion(locacion locacion)
         {
             try
             {
                 using (var conn = conexion.AbrirConexion())
                 {
-                    string query = "INSERT INTO locacion (ciudad, direccion) VALUES (@ciudad, @direccion)";
+                    string query = "INSERT INTO locacion (ciudad, direccion, latitud, longitud) VALUES (@ciudad, @direccion, @latitud, @longitud)";
                     MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@ciudad", locacion.Ciudad);
-                    cmd.Parameters.AddWithValue("@direccion", locacion.Direccion);
+                    cmd.Parameters.AddWithValue("@ciudad", locacion.ciudad);
+                    cmd.Parameters.AddWithValue("@direccion", locacion.direccion);
+                    cmd.Parameters.AddWithValue("@latitud", locacion.latitud);
+                    cmd.Parameters.AddWithValue("@longitud", locacion.longitud);
                     cmd.ExecuteNonQuery();
                 }
-                return RedirectToAction("Locacion_Admin");
+                return RedirectToAction("locacion_Admin");
             }
             catch (Exception ex)
             {
                 ViewBag.Error = "Error al agregar locación: " + ex.Message;
                 return View();
             }
+
+
         }
 
         // Método para mostrar el formulario de edición
-        public ActionResult Editar(int id)
+
+        public ActionResult editar()
         {
-            locacion locacion = null;
-
-            try
-            {
-                using (var conn = conexion.AbrirConexion())
-                {
-                    string query = "SELECT * FROM locacion WHERE id_locacion = @id";
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@id", id);
-                    MySqlDataReader reader = cmd.ExecuteReader();
-
-                    if (reader.Read())
-                    {
-                        locacion = new locacion
-                        {
-                            Id_Locacion = Convert.ToInt32(reader["id_locacion"]),
-                            Ciudad = reader["ciudad"].ToString(),
-                            Direccion = reader["direccion"].ToString()
-                        };
-                    }
-                    reader.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Error = "Error al obtener locación: " + ex.Message;
-            }
-
-            return View(locacion);
+            return View("locacion");
         }
 
-        // Método para procesar la edición
+        // Método para procesar la creación
         [HttpPost]
-        public ActionResult Editar(locacion locacion)
+        public ActionResult EditarLocacion(locacion locacion)
         {
             try
             {
                 using (var conn = conexion.AbrirConexion())
                 {
-                    string query = "UPDATE locacion SET ciudad = @ciudad, direccion = @direccion WHERE id_locacion = @id";
+                    string query = "UPDATE locacion SET ciudad = @ciudad, direccion = @direccion, latitud = @latitud, longitud = @longitud " +
+                                    "WHERE id_locacion = @id\r\n";
                     MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@ciudad", locacion.Ciudad);
-                    cmd.Parameters.AddWithValue("@direccion", locacion.Direccion);
-                    cmd.Parameters.AddWithValue("@id", locacion.Id_Locacion);
+                    
+                    cmd.Parameters.AddWithValue("@ciudad", locacion.ciudad);
+                    cmd.Parameters.AddWithValue("@direccion", locacion.direccion);
+                    cmd.Parameters.AddWithValue("@latitud", locacion.latitud);
+                    cmd.Parameters.AddWithValue("@longitud", locacion.longitud);
+                    cmd.Parameters.AddWithValue("@id", locacion.id_Locacion);
                     cmd.ExecuteNonQuery();
                 }
-                return RedirectToAction("Locacion_Admin");
+                return RedirectToAction("locacion_Admin");
             }
             catch (Exception ex)
             {
                 ViewBag.Error = "Error al editar locación: " + ex.Message;
-                return View();
+                return RedirectToAction("locacion_Admin");
             }
+
+            
         }
 
+
         // Método para eliminar
-        public ActionResult Eliminar(int id)
+        public ActionResult EliminarLocacion(int id)
         {
             try
             {
