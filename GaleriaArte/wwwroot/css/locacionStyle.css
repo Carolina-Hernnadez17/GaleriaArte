@@ -2,68 +2,200 @@
     background-color: #101010;
 }
 
-.container-AddLocation{
+
+.Agregar-section{
+    margin-top:10px;
+}
+
+.Agregar-section, .section-serviceAdmin {
+    flex: 1;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: justify;
+    
+}
+
+
+.btn-add {
+    border-radius: 15px;
+    width: 350px; 
+    height: 50px;
+    font-size: 20px;
+    margin-top: 15px;
+    background-color: #333432;
+}
+
+.btn-tabla, .btn-tabla1 {
+    justify-items: left;
+    border-radius: 15px;
+    width: 95px;
+    height: 45px;
+    font-size: 15px;
+    margin-right: 15px;
+}
+
+.btn-tabla1 {
+    
+    background-color: #c39168;
+}
+
+
+.editModal {
+    background-color: #1a1717;
+}
+
+.form_agregar_locacion {
+    background-color: #101010;
     display: flex;
     
+    align-items: stretch;
+    padding: 50px;
+    border-radius: 15px;
 }
 
-.section-add {
-    padding-top: 30px;
-    padding-bottom: 30px;
-    margin-right: 5px;
-    background-color: #141703;
-    border-radius: 40px;
-    top: 17%;
-    position: absolute;
-    right: 65px;
+.form-control:focus {
+    border-color: #6d4730;
+    box-shadow: 0 0 8px rgba(195, 145, 104, 0.8);
+    background-color: #333432;
 }
 
-.container-AddLocation{
-    justify-items:center;
-    margin: 10px;
-}
-.form_agregar_locacion {
-    padding-inline: 60px;
-    padding-top: 30px;
-    text-align: right;
-    
+.form-control {
+    background-color: #333432;
+    color: darkgrey;
+    border-radius: 15px;
 }
 
+.form-floating{
+    font-size: 20px;
+}
+
+.header-table{
+    background-color:black;
+    padding: 60px;
+}
+.header-table th{
+    padding: 30px;
+}
+
+#img-estatua1{
+    width:10%;
+    height: 20%;
+    margin-inline: 120px;
+}
+
+.modal-body, .modal-content {
+    background-color: #1a1717;
+}
+.p-text {
+    color: transparent; /* Hace el texto transparente */
+    background-image: linear-gradient(to right, #c39168, #8b5f42); /* Degradado de color */
+    -webkit-background-clip: text; /* Aplica el fondo solo al texto */
+    background-clip: text; /* Aplica el fondo solo al texto */
+    font-size: 30px;
+    margin-top: -20px;
+    text-shadow: 0 0 3px rgba(195, 145, 104, 0.6);
+}
+
+
+.section-division {
+    text-align: center;
+    padding: 50px;
+    display: flex;
+    justify-content: center;
+    background-color: #0d0d0d;
+}
+
+    .section-division h1 {
+        font-size: 50px;
+        position: relative;
+        top: 60px;
+        text-align: center;
+        
+    }
+.section-bienvenida {
+    text-align: center;
+    justify-items: center;
+    padding: 5%;
+    background-color: #0d0d0d;
+    width: 100%;
+    min-height: 150px;
+}
+
+
+.section-serviceAdmin {
+    position: relative;
+    text-align: center;
+    background: linear-gradient(#1a1717ed, #1e1b1bf1),
+    url('../resourcesLocacion/preview-14-noche-l-nueva-70868bf487b771a08e17218393955819-1024-1024.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 8px rgba(195, 145, 104, 0.8);
+    border-radius: 25px;
+    margin-inline: 30px;
+    padding-bottom:50px;
+}
+
+    .section-serviceAdmin h2 {
+        font-size: 50px;
+        text-align: center;
+        margin-top:15px;
+        
+    }
+
+    .section-serviceAdmin p {
+        margin-top: 40px;
+        line-height: 25px;
+        text-align:justify;
+        margin: 50px;
+
+    }
 
 
 .section_editButton {
     margin: 10px;
+}
+
+
+
+
+.section-table {
+    background-color: #101010;
+    
+    padding-bottom: 20%;
+    border-radius: 20px;
+    margin-bottom: 60px;
+    text-align:center;
     
 }
 
-.section-add h4 {
-    text-align: center;
-}
 
-.form-control-add{
-    margin-left:25px;
-    justify-items: right;
+.section-ubicacion {
+    padding: 10px;
+    text-decoration: none;
+    background-color: #101010;
+    border-radius: 15px;
+    color: white;
 }
 
 .table-striped {
-    background-color: #191919;
-    padding: 30px;
     color: white;
+    margin-top: 10px;
+    border-radius: 20px;
 }
 
-.table-striped td{
-    color: white;
-    text-align:justify;
-}
-
-.section-table {
-    
-    margin-right:24%;
-    background-color: white;
-    padding:40px;
-    padding-right: 70px;
-    padding-bottom: 15%;
-    margin-top: 30px;
-
-        
-}
+    .table-striped td {
+        color: white;
+        text-align: justify;
+        justify-items: center;
+        text-align:center;
+    }
+    .table-striped tr {
+        position: relative;
+        top: 0px;
+        justify-items: stretch;
+        background-color: #101010;
+        border-radius: 15px;
+    }
