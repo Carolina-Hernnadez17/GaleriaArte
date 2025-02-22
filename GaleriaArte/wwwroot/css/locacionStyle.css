@@ -1,14 +1,12 @@
 ﻿
-
-.Agregar-section{
-    margin-top:10px;
-}
-
 .Agregar-section, .section-serviceAdmin {
     flex: 1;
     padding: 20px;
     border-radius: 8px;
     text-align: justify;
+
+.container-AddLocation{
+    display: flex;
     
 }
 
@@ -20,6 +18,14 @@
     font-size: 20px;
     margin-top: 15px;
     background-color: #333432;
+.section-add {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-right: 5px;
+    border-radius: 40px;
+    top: 17%;
+    position: absolute;
+    right: 65px;
 }
 
 .btn-tabla, .btn-tabla1 {
@@ -91,6 +97,9 @@
     font-size: 30px;
     margin-top: -20px;
     text-shadow: 0 0 3px rgba(195, 145, 104, 0.6);
+.section_editButton {
+    margin: 10px;
+    
 }
 
 
@@ -141,6 +150,10 @@
         margin-top:15px;
         
     }
+.table-striped {
+    padding: 30px;
+    color: white;
+}
 
     .section-serviceAdmin p {
         margin-top: 40px;

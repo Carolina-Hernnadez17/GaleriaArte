@@ -24,8 +24,15 @@
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
+    <Content Update="wwwroot\css\expocisionStyle.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+=======
     <Folder Include="wwwroot\CssLogin\" />
     <Folder Include="wwwroot\resourcesLogin\" />
+>>>>>>> Subiendo disseño login
   </ItemGroup>
 
 </Project>
