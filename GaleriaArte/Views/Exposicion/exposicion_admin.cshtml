@@ -1,5 +1,62 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<GaleriaArte.Models.exposicion>
+
 @{
+    ViewData["Title"] = "Lista de exposiciones";
 }
+
+<head>
+    <link rel="stylesheet" href="~/css/expocisionStyle.css" asp-append-version="true" />
+</head>
+
+<div class="container">
+    <h2>Lista de Exposiciones</h2>
+
+    <div class="mb-3 text-end">
+        <a href="@Url.Action("Agregar")" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Agregar Nueva Exposición
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Locación</th>
+                    <th>Obra</th>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Cierre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var expo in Model)
+                {
+                    <tr>
+                        <td>@expo.id_exposicion</td>
+                        <td>@expo.id_locacion</td>
+                        <td>@expo.id_obra</td>
+                        <td>@expo.titulo_exposicion</td>
+                        <td>@expo.descripcion</td>
+                        <td>@expo.fecha_inicio.ToShortDateString()</td>
+                        <td>@expo.fecha_cierre.ToShortDateString()</td>
+                        <td>
+                            <a href="@Url.Action("Editar", new { id = expo.id_exposicion })" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil-square"></i> Editar
+                            </a>
+
+                            <form method="post" action="@Url.Action("Eliminar")" style="display:inline;">
+                                <input type="hidden" name="id" value="@expo.id_exposicion" />
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta exposición?');">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

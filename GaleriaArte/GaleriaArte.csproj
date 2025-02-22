@@ -16,4 +16,11 @@
     <Folder Include="wwwroot\resourcesLocacion\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\css\expocisionStyle.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

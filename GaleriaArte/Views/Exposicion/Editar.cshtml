@@ -1,0 +1,59 @@
+﻿@model GaleriaArte.Models.exposicion
+
+@{
+    ViewData["Title"] = "Editar Exposición";
+}
+
+<h1 class="text-center fw-bold mb-4">Editar Exposición</h1>
+
+<form method="post" asp-action="Editar" class="container my-5">
+    <input type="hidden" asp-for="id_exposicion" />
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="titulo_exposicion" class="form-label">Título de la Exposición</label>
+            <input type="text" class="form-control" id="titulo_exposicion" asp-for="titulo_exposicion" required />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" id="descripcion" asp-for="descripcion" rows="3"></textarea>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
+            <input type="date" class="form-control" id="fecha_inicio" asp-for="fecha_inicio" required />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label for="fecha_cierre" class="form-label">Fecha de Cierre</label>
+            <input type="date" class="form-control" id="fecha_cierre" asp-for="fecha_cierre" required />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group">
+            <label for="id_locacion">Locación:</label>
+            <select class="form-control" id="id_locacion" name="id_locacion" required>
+                <option value="">Seleccione una locación</option>
+                @if (ViewBag.Locaciones != null)
+                {
+                    foreach (var loc in ViewBag.Locaciones)
+                    {
+                        <option value="@loc.id_Locacion">@loc.ciudad</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button type="submit" class="btn btn-outline-success">Guardar Cambios</button>
+    </div>
+</form>
+
+<div class="text-center mt-4">
+    <a href="@Url.Action("exposicion_admin")" class="btn btn-outline-secondary">Volver a la lista de exposiciones</a>
+</div>
