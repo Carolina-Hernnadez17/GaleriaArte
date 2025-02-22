@@ -56,7 +56,7 @@ namespace GaleriaArte.Controllers
 
         // Método para procesar la creación
         [HttpPost]
-        public ActionResult AgregarLocacion(locacion locacion)
+        public ActionResult AgregarUbicacion(locacion locacion)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace GaleriaArte.Controllers
                     cmd.Parameters.AddWithValue("@longitud", locacion.longitud);
                     cmd.ExecuteNonQuery();
                 }
-                return RedirectToAction("locacion_Admin");
+                return RedirectToAction("locacion_admin");
             }
             catch (Exception ex)
             {
