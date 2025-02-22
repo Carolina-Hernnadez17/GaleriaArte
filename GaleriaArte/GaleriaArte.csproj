@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <Folder Include="css_E\" />
-    <Folder Include="css_R\" />
+    <Folder Include="css_R\Resources_Login\" />
     <Folder Include="wwwroot\resourcesLocacion\" />
   </ItemGroup>
 
