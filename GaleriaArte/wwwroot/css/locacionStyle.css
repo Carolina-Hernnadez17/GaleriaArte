@@ -1,6 +1,4 @@
-﻿body {
-    background-color: #101010;
-}
+﻿
 
 .container-AddLocation{
     display: flex;
@@ -11,7 +9,6 @@
     padding-top: 30px;
     padding-bottom: 30px;
     margin-right: 5px;
-    background-color: #141703;
     border-radius: 40px;
     top: 17%;
     position: absolute;
@@ -29,8 +26,6 @@
     
 }
 
-
-
 .section_editButton {
     margin: 10px;
     
@@ -46,7 +41,6 @@
 }
 
 .table-striped {
-    background-color: #191919;
     padding: 30px;
     color: white;
 }

@@ -60,6 +60,19 @@ input[type="email"] {
         transform: scale(1.05);
 }
 
+.text-success {
+    color: #6d4730 !important;
+}
+
+.btn-outline-success {
+    border-color: #6d4730 !important;
+    color: #6d4730 !important;
+}
+
+.btn-outline-success:hover {
+    background-color: #6d4730 !important;
+    color: #fff !important;
+}
 
 /* Animación de desvanecimiento y desplazamiento para las cards */
 @keyframes fadeInUp {
