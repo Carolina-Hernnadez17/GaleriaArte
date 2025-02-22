@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\CssLogin\**" />
+    <Compile Remove="wwwroot\resourcesLogin\**" />
+    <Content Remove="wwwroot\CssLogin\**" />
+    <Content Remove="wwwroot\resourcesLogin\**" />
+    <EmbeddedResource Remove="wwwroot\CssLogin\**" />
+    <EmbeddedResource Remove="wwwroot\resourcesLogin\**" />
+    <None Remove="wwwroot\CssLogin\**" />
+    <None Remove="wwwroot\resourcesLogin\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="bootstrap" Version="5.3.3" />
     <PackageReference Include="BootstrapBlazor" Version="9.3.1-beta02" />
     <PackageReference Include="MySql.Data" Version="9.2.0" />
@@ -25,11 +36,6 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\CssLogin\" />
-    <Folder Include="wwwroot\resourcesLogin\" />
   </ItemGroup>
 
 </Project>
