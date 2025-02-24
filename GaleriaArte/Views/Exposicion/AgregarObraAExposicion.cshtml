@@ -1,0 +1,24 @@
+﻿@model GaleriaArte.Models.exposicion
+
+@{
+    ViewData["Title"] = "Agregar Obra a Exposición";
+}
+
+<h2>Agregar Obra a la Exposición: @Model.titulo_exposicion</h2>
+
+<form method="post">
+    <div class="form-group">
+        <label for="obra_id">Seleccionar Obra</label>
+        <select class="form-control" id="obra_id" name="obra_id" required>
+            <option value="">Seleccione una obra</option>
+            @foreach (var obra in ViewBag.Obras as List<GaleriaArte.Models.obra>)
+            {
+                <option value="@obra.id_obra">@obra.titulo</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Agregar Obra</button>
+</form>
+
+<a href="@Url.Action("exposicion_admin")" class="btn btn-secondary mt-3">Volver</a>

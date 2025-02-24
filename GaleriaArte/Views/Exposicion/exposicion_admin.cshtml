@@ -1,62 +1,97 @@
 ﻿@model List<GaleriaArte.Models.exposicion>
 
 @{
-    ViewData["Title"] = "Lista de exposiciones";
+    ViewData["Title"] = "Exposiciones";
 }
 
 <head>
     <link rel="stylesheet" href="/css_C/ExpocisionStyle.css" asp-append-version="true" />
 </head>
 
-<div class="container">
-    <h2>Lista de Exposiciones</h2>
+<div>
+    <div>
+        <h2>Exposiciones</h2>
 
-    <div class="mb-3 text-end">
-        <a href="@Url.Action("Agregar")" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Agregar Nueva Exposición
-        </a>
+
+        <form method="get" action="@Url.Action("exposicion_admin_filtrada", "Exposicion")" class="p-4  rounded shadow-sm border">
+            <h5 class="mb-4">Buscar Exposición</h5>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="estadoFiltro" class="form-label">Estado</label>
+                    <select id="estadoFiltro" name="estadoFiltro" class="form-select">
+                        <option value="">-- Seleccionar --</option>
+                        <option value="Activa">Activa</option>
+                        <option value="Finalizada">Finalizada</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
+                    <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="fechaCierre" class="form-label">Fecha de Cierre</label>
+                    <input type="date" id="fechaCierre" name="fechaCierre" class="form-control" />
+                </div>
+
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Buscar</button>
+                </div>
+            </div>
+        </form>
+
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-hover">
+
+    <div>
+        <a href="@Url.Action("Agregar")" class="btn btn-primary  mb-3">Agregar Exposición</a>
+
+        <table class="table table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Locación</th>
-                    <th>Obra</th>
                     <th>Título</th>
                     <th>Descripción</th>
                     <th>Fecha Inicio</th>
                     <th>Fecha Cierre</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var expo in Model)
+                @foreach (var exposicion in Model)
                 {
                     <tr>
-                        <td>@expo.id_exposicion</td>
-                        <td>@expo.id_locacion</td>
-                        <td>@expo.id_obra</td>
-                        <td>@expo.titulo_exposicion</td>
-                        <td>@expo.descripcion</td>
-                        <td>@expo.fecha_inicio.ToShortDateString()</td>
-                        <td>@expo.fecha_cierre.ToShortDateString()</td>
-                        <td>
-                            <a href="@Url.Action("Editar", new { id = expo.id_exposicion })" class="btn btn-warning btn-sm">
-                                <i class="bi bi-pencil-square"></i> Editar
-                            </a>
+                        <td>@exposicion.titulo_exposicion</td>
+                        <td>@exposicion.descripcion</td>
+                        <td>@exposicion.fecha_inicio.ToString("dd/MM/yyyy")</td>
+                        <td>@exposicion.fecha_cierre.ToString("dd/MM/yyyy")</td>
+                        <td>@(exposicion.estado ? "Activa" : "Finalizada")</td>
+                        <td class="btn-container">
+                            @if (exposicion.fecha_inicio > DateTime.Now || exposicion.estado == false)
+                            {
+                                <a href="@Url.Action("AgregarObra", "Exposicion", new { exposicionId = exposicion.id_exposicion })" class="btn btn-tabla">Agregar Obra</a>
+                            }
 
-                            <form method="post" action="@Url.Action("Eliminar")" style="display:inline;">
-                                <input type="hidden" name="id" value="@expo.id_exposicion" />
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta exposición?');">
-                                    <i class="bi bi-trash"></i> Eliminar
-                                </button>
-                            </form>
+                            @if (!exposicion.estado)
+                            {
+                                <form method="post" action="@Url.Action("Eliminar", "Exposicion")"
+                                      style="display:inline;"
+                                      onsubmit="return confirm('¿Estás seguro de eliminar esta exposición?');">
+                                    <input type="hidden" name="id" value="@exposicion.id_exposicion" />
+                                    <button type="submit" class="btn btn-tabla1">Eliminar</button>
+                                </form>
+
+                            }
+                            <a href="@Url.Action("Editar", new { id = exposicion.id_exposicion })" class="btn btn-tabla">Editar</a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
+
 </div>

@@ -11,9 +11,6 @@ namespace GaleriaArte.Models
         public int id_locacion { get; set; }
 
         [Required]
-        public int id_obra {  get; set; }
-
-        [Required]
         [MaxLength(50)]
         public string titulo_exposicion { get; set; }
 
@@ -26,6 +23,8 @@ namespace GaleriaArte.Models
 
         [Required]
         public DateTime fecha_cierre { get; set; }
+
+        public Boolean estado {  get; set; }
 
     }
 }

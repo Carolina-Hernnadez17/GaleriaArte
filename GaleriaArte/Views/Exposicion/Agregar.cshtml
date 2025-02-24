@@ -5,65 +5,68 @@
 }
 
 <head>
-    <link rel="stylesheet" href="~/css/expocisionStyle.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/css_C/ExpocisionStyle.css" asp-append-version="true" />
 </head>
 
-<h2>Agregar Nueva Exposición</h2>
+<h2>Agregar Exposición</h2>
 
-<form asp-action="Agregar" method="post">
+<form method="post">
     <div class="form-group">
-        <label for="id_locacion">Locación:</label>
-        <select class="form-control" id="id_locacion" name="id_locacion" required>
-            <option value="">Seleccione una locación</option>
-            @if (ViewBag.Locaciones != null)
-            {
-                foreach (var loc in ViewBag.Locaciones)
-                {
-                            <option value="@loc.id_Locacion">@loc.ciudad</option>
-                }
-            }
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label for="id_obra">Obra:</label>
-        <select name="id_obra" class="form-control">
-            <option value="">Seleccione una obra</option>
-            @if (ViewBag.Obras != null && ViewBag.Obras.Count > 0)
-            {
-                @foreach (var obra in ViewBag.Obras)
-                {
-                    <option value="@obra.id_obra">@obra.titulo</option>
-                }
-            }
-            else
-            {
-                <option disabled>No hay obras disponibles</option>
-            }
-        </select>
-
-    </div>
-
-    <div class="form-group">
-        <label for="titulo_exposicion">Título de la Exposición:</label>
+        <label for="titulo_exposicion">Título</label>
         <input type="text" class="form-control" id="titulo_exposicion" name="titulo_exposicion" required />
     </div>
 
     <div class="form-group">
-        <label for="descripcion">Descripción:</label>
+        <label for="descripcion">Descripción</label>
         <textarea class="form-control" id="descripcion" name="descripcion"></textarea>
     </div>
 
     <div class="form-group">
-        <label for="fecha_inicio">Fecha de Inicio:</label>
+        <label for="fecha_inicio">Fecha de Inicio</label>
         <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required />
     </div>
 
     <div class="form-group">
-        <label for="fecha_cierre">Fecha de Cierre:</label>
+        <label for="fecha_cierre">Fecha de Cierre</label>
         <input type="date" class="form-control" id="fecha_cierre" name="fecha_cierre" required />
     </div>
 
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a asp-action="exposicion_admin" class="btn btn-secondary">Cancelar</a>
+    <div class="form-group">
+        <label for="id_locacion">Locación</label>
+        <select class="form-control" id="id_locacion" name="id_locacion" required>
+            <option value="">Seleccione una locación</option>
+            @foreach (var locacion in ViewBag.Locaciones as List<GaleriaArte.Models.locacion>)
+            {
+                <option value="@locacion.id_Locacion">@locacion.ciudad</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="estado">Estado</label>
+        <select class="form-control" id="estado" name="estado" required>
+            <option value="true">Activa</option>
+            <option value="false">Finalizada</option>
+        </select>
+    </div>
+
+    <div class="container mt-5">
+        <form method="post" class="needs-validation" novalidate>
+            <div class="d-flex justify-content-start">
+                <button type="submit" class="btn btn-tabla me-3">Guardar </button>
+                <a href="javascript:void(0);" class="btn btn-tabla1" id="cancelarBtn">Cancelar</a>
+            </div>
+        </form>
+    </div>
 </form>
+
+
+<script>
+    document.getElementById("cancelarBtn").addEventListener("click", function(event) {
+        event.preventDefault(); 
+
+        if (confirm("¿Estás seguro de que deseas cancelar? Todos los cambios no guardados se perderán.")) {
+            window.location.href = "@Url.Action("exposicion_admin")"; 
+        }
+    });
+</script>
