@@ -22,7 +22,7 @@
         <div class="row register-container">
             <img class="left-image" src="../css_R/Resources_Login/descarga.jpg" />
             <div class="col">
-                <h3 class="text-center">Inicio de sesión</h3>
+                <h3 class="text-center">Recuperación de contraseña</h3>
                 <hr>
                 <form method="post">
                     <div class="mb-3">
@@ -33,23 +33,16 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Contraseña</label>
+                        <label class="form-label">Nueva Contraseña</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-lock"></i></span>
                             <input type="password" class="form-control" name="Contrasena" required>
                         </div>
                     </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="terms" required>
-                        <label class="form-check-label" for="terms">Acepto los términos y condiciones</label>
-                    </div>
+                    
                     <button type="submit" class="btn btn-register">Continuar</button>
                 </form>
                 <hr>
-                <div class="d-flex justify-content-center gap-3 mb-3">
-                    <i class="bi bi-person-plus me-2"></i><a href="@Url.Action("Registro", "Login")">¿No tienes cuenta? <strong>¡Regístrate!</strong></a>
-                    <i class="bi bi-lock me-2"></i><a href="@Url.Action("registro_user", "Login")">¿Olvidaste tu contraseña?</a>
-                </div>
             </div>
         </div>
     </div>
