@@ -1,5 +1,223 @@
 ﻿@model IEnumerable<obra>
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Listado de Obras</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .listado-obras {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .categorias {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .categoria-pill {
+            background-color: #e3f2fd;
+            border: 1px solid #90caf9;
+            color: #1565c0;
+            border-radius: 50px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .categoria-pill:hover {
+                background-color: #bbdefb;
+                color: #0d47a1;
+            }
+
+        .buscador {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+            .buscador input {
+                width: 50%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 25px;
+                outline: none;
+                transition: box-shadow 0.3s ease;
+            }
+
+                .buscador input:focus {
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .card:hover {
+                transform: scale(1.05);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            }
+
+        .card-img-top {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .card-body {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .estado-disponible {
+            color: green;
+            font-weight: bold;
+        }
+
+        .estado-no-disponible {
+            color: red;
+            font-weight: bold;
+        }
+
+        .disabled-card {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="listado-obras">
+        <!-- Buscador -->
+        <div class="buscador">
+            <input type="text" id="searchInput" oninput="filtrarObras()" placeholder="Buscar por artista, título o estilo...">
+        </div>
+
+        <!-- Filtros por categoría -->
+        <div class="categorias">
+            <div class="categoria-pill" onclick="mostrarTodas()">Todas</div>
+            @foreach (var estilo in Model.Select(o => o.estilo_arte).Distinct())
+            {
+                <div class="categoria-pill" onclick="filtrarPorEstilo('@estilo')">@estilo</div>
+            }
+        </div>
+
+        <h2 class="text-center mb-4">Listado de Obras</h2>
+        <div class="row g-3" id="obraList">
+            @foreach (var obra in Model)
+            {
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 obra-item" data-estilo="@obra.estilo_arte">
+                    @if (obra.estado == 1)
+                    {
+                        <a href="@Url.Action("Detalles", "Obra", new { id = obra.id_obra })" class="card text-decoration-none">
+                            <img src="@obra.imagen_url" alt="Imagen de @obra.titulo" class="card-img-top" onerror="this.onerror=null; this.src='/images/default-art.jpg'">
+                            <div class="card-body">
+                                <h5 class="card-title">@obra.titulo</h5>
+                                <p class="card-text"><strong>Artista:</strong> @obra.nombre_artista</p>
+                                <p class="card-text"><strong>Estilo:</strong> @obra.estilo_arte</p>
+                                <p class="card-text"><strong>Precio:</strong> $@obra.precio.ToString("N2")</p>
+                                <p class="card-text">
+                                    <strong>Estado:</strong>
+                                    <span class="estado-disponible">Disponible</span>
+                                </p>
+                            </div>
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="card disabled-card">
+                            <img src="@obra.imagen_url" alt="Imagen de @obra.titulo" class="card-img-top" onerror="this.onerror=null; this.src='/images/default-art.jpg'">
+                            <div class="card-body">
+                                <h5 class="card-title">@obra.titulo</h5>
+                                <p class="card-text"><strong>Artista:</strong> @obra.nombre_artista</p>
+                                <p class="card-text"><strong>Estilo:</strong> @obra.estilo_arte</p>
+                                <p class="card-text"><strong>Precio:</strong> $@obra.precio.ToString("N2")</p>
+                                <p class="card-text">
+                                    <strong>Estado:</strong>
+                                    <span class="estado-no-disponible">No disponible</span>
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <script>
+        function filtrarObras() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const obras = document.querySelectorAll('.obra-item');
+            obras.forEach(obra => {
+                const text = obra.innerText.toLowerCase();
+                obra.style.display = text.includes(input) ? '' : 'none';
+            });
+        }
+
+        function filtrarPorEstilo(estilo) {
+            const obras = document.querySelectorAll('.obra-item');
+            obras.forEach(obra => {
+                const obraEstilo = obra.getAttribute('data-estilo');
+                obra.style.display = obraEstilo === estilo ? '' : 'none';
+            });
+        }
+
+        function mostrarTodas() {
+            const obras = document.querySelectorAll('.obra-item');
+            obras.forEach(obra => {
+                obra.style.display = '';
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+@* @model IEnumerable<obra>
+
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -29,4 +247,4 @@
         </div>
 
     }
-</div>
+</div> *@
