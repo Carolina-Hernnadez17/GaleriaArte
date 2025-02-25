@@ -1,0 +1,42 @@
+﻿@model GaleriaArte.Models.AgregarObraViewModel
+
+@{
+    ViewData["Title"] = "Agregar Obras a la Exposición";
+}
+
+<h1>Agregar Obras a la Exposición</h1>
+
+@if (Model != null && Model.ExposicionId != 0)
+{
+    <p><strong>Exposición:</strong> @Model.ExposicionTitulo</p>
+
+    <form method="post" action="@Url.Action("GuardarObraEnExposicion", "Exposicion")">
+        <input type="hidden" name="exposicionId" value="@Model.ExposicionId" />
+
+        <div class="form-group">
+            <label for="ObrasSeleccionadas">Selecciona una o más Obras</label>
+            <select id="ObrasSeleccionadas" name="obraIds" class="form-control" multiple size="5">
+                @if (Model.ObrasDisponibles != null && Model.ObrasDisponibles.Any())
+                {
+                    foreach (var obra in Model.ObrasDisponibles)
+                    {
+                        <option value="@obra.id_obra">@obra.titulo - @obra.nombre_artista</option>
+                    }
+                }
+                else
+                {
+                    <option disabled>No hay obras disponibles</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">Agregar Obras</button>
+            <a href="@Url.Action("exposicion_admin", "Exposicion")" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+}
+else
+{
+    <p>Error al cargar los datos. Intenta de nuevo.</p>
+}

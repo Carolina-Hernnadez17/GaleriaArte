@@ -4,56 +4,83 @@
     ViewData["Title"] = "Editar Exposición";
 }
 
-<h1 class="text-center fw-bold mb-4">Editar Exposición</h1>
+<head>
+    <link rel="stylesheet" href="/css_C/ExpocisionStyle.css" asp-append-version="true" />
+</head>
 
-<form method="post" asp-action="Editar" class="container my-5">
-    <input type="hidden" asp-for="id_exposicion" />
+<div class="container my-4">
+    <h2 class="mb-4">Editar Exposición</h2>
 
-    <div class="row">
-        <div class="col-md-6 mb-3">
+    <form method="post" class="needs-validation" novalidate>
+        <input type="hidden" id="id_exposicion" name="id_exposicion" value="@Model.id_exposicion" />
+
+        <div class="mb-3">
             <label for="titulo_exposicion" class="form-label">Título de la Exposición</label>
-            <input type="text" class="form-control" id="titulo_exposicion" asp-for="titulo_exposicion" required />
+            <input type="text" id="titulo_exposicion" name="titulo_exposicion" class="form-control" value="@Model.titulo_exposicion" required />
+            <div class="invalid-feedback">
+                Por favor, ingrese un título.
+            </div>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción</label>
-            <textarea class="form-control" id="descripcion" asp-for="descripcion" rows="3"></textarea>
+            <textarea id="descripcion" name="descripcion" class="form-control" required>@Model.descripcion</textarea>
+            <div class="invalid-feedback">
+                La descripción es obligatoria.
+            </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-md-6 mb-3">
+        <div class="mb-3">
             <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
-            <input type="date" class="form-control" id="fecha_inicio" asp-for="fecha_inicio" required />
+            <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" value="@Model.fecha_inicio.ToString("yyyy-MM-dd")" required />
+            <div class="invalid-feedback">
+                Por favor, seleccione una fecha de inicio.
+            </div>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="mb-3">
             <label for="fecha_cierre" class="form-label">Fecha de Cierre</label>
-            <input type="date" class="form-control" id="fecha_cierre" asp-for="fecha_cierre" required />
+            <input type="date" id="fecha_cierre" name="fecha_cierre" class="form-control" value="@Model.fecha_cierre.ToString("yyyy-MM-dd")" required />
+            <div class="invalid-feedback">
+                Por favor, seleccione una fecha de cierre.
+            </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="form-group">
-            <label for="id_locacion">Locación:</label>
-            <select class="form-control" id="id_locacion" name="id_locacion" required>
-                <option value="">Seleccione una locación</option>
-                @if (ViewBag.Locaciones != null)
-                {
-                    foreach (var loc in ViewBag.Locaciones)
-                    {
-                        <option value="@loc.id_Locacion">@loc.ciudad</option>
-                    }
-                }
-            </select>
+        <div class="mb-3">
+            <label for="id_locacion" class="form-label">Locación</label>
+            @Html.DropDownListFor(
+                     model => model.id_locacion,
+                     new SelectList(ViewBag.Locaciones, "id_Locacion", "ciudad"),
+                     "Seleccione una locación",
+                     new { @class = "form-control", @required = "required" }
+                     )
         </div>
-    </div>
 
-    <div class="text-center">
-        <button type="submit" class="btn btn-outline-success">Guardar Cambios</button>
-    </div>
-</form>
+        <div class="mb-3">
+            <label for="estado" class="form-label">Estado</label>
+            @Html.DropDownListFor(
+                     model => model.estado,
+                     new SelectList(new List<SelectListItem>
+            {
+            new SelectListItem { Text = "Activa", Value = "true" },
+            new SelectListItem { Text = "Finalizada", Value = "false" }
+            }, "Value", "Text"),
+                     new { @class = "form-control", @required = "required" }
+                     )
+        </div>
 
-<div class="text-center mt-4">
-    <a href="@Url.Action("exposicion_admin")" class="btn btn-outline-secondary">Volver a la lista de exposiciones</a>
+        <div class="d-flex justify-content-start mt-4">
+            <button type="submit" class="btn btn-primary me-3">Guardar</button>
+            <a href="javascript:void(0);" class="btn btn-secondary" id="cancelarBtn">Cancelar</a>
+        </div>
+    </form>
 </div>
+
+<script>
+    document.getElementById("cancelarBtn").addEventListener("click", function (event) {
+        event.preventDefault();
+            if (confirm("¿Estás seguro de que deseas cancelar? Todos los cambios no guardados se perderán.")) {
+            window.location.href = "@Url.Action("exposicion_admin")";
+            }
+        });
+</script>

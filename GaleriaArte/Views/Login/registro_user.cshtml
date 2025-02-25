@@ -1,4 +1,4 @@
-﻿@model GaleriaArte.Models.usuario
+﻿@* @model GaleriaArte.Models.usuario
 
 @{
     ViewData["Title"] = "Registro de Usuario";
@@ -155,4 +155,141 @@
 
     </script>
 }
+ *@
+
+
+ @model GaleriaArte.Models.usuario
+
+@{
+    Layout = null; // Quitar el layout para esta vista
+}
+<p>@ViewBag.Mensaje</p>
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RegistroUser - GaleriaArte</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/11.0.16/sweetalert2.min.css">
+    <link rel="stylesheet" href="../css_R/Loginn.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="row register-container">
+            <img class="left-image" src="../css_R/Resources_Login/descarga.jpg" />
+            <div class="col">
+                <h3 class="text-center">Registro de usuario</h3>
+                <hr>
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input type="text" class="form-control" id="floatingNombre" name="Nombre_Cliente" placeholder="Nombre Completo" required value="@Model?.Nombre_Cliente">
+
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input type="text" class="form-control" id="floatingDocumento" name="Documento_Identidad" placeholder="Documento de Identidad" required value="@Model?.Documento_Identidad">
+
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input type="text" class="form-control" id="floatingDireccion" name="Direccion_Cliente" placeholder="Dirección" required value="@Model?.Direccion_Cliente">
+
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <div class="input-group">
+                            <div class="form-floating mb-5 flex-fill">
+                                <select class="form-control" id="floatingPais" name="Pais" required>
+                                    <option value="">Selecciona tu país</option>
+                                    <option value="Guatemala">Guatemala</option>
+                                    <option value="El Salvador">El Salvador</option>
+                                    <option value="Honduras">Honduras</option>
+                                    <option value="Nicaragua">Nicaragua</option>
+                                    <option value="Costa Rica">Costa Rica</option>
+                                    <option value="Panamá">Panamá</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input type="text" class="form-control" id="floatingTelefono" name="Telefono" placeholder="Teléfono" required value="@Model?.Telefono">
+
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input type="email" class="form-control" id="floatingCorreo" name="Correo" placeholder="Correo Electrónico" required value="@Model?.Correo">
+
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                            <input type="password" class="form-control" id="floatingContrasena" name="Contrasena" placeholder="Contraseña" required>
+
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-register">Continuar</button>
+                </form>
+                <hr>
+            </div>
+        </div>
+    </div>
+    <!-- Contenedor del Toast -->
+    <div id="toast-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1050; display: none;">
+        <div id="toastMensaje" class="toast align-items-center text-white bg-dark border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center">
+                    <i class="bi bi-exclamation-triangle-fill me-2" style="font-size: 1.5rem; color: #6f4832;"></i>
+                    <span id="toast-text"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para mostrar el Toast solo si hay un mensaje -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var mensaje = '@Html.Raw(TempData["Mensaje"])';
+
+            if (mensaje.trim() !== "" && mensaje !== "null" && mensaje !== "undefined") {
+                document.getElementById('toast-text').textContent = mensaje;
+                document.getElementById('toast-container').style.display = "block";
+
+                var toastElement = document.getElementById('toastMensaje');
+                var toast = new bootstrap.Toast(toastElement);
+                toast.show();
+            }
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
 
