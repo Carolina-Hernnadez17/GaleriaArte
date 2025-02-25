@@ -8,39 +8,46 @@
     <link rel="stylesheet" href="~/css/locacionStyle.css" asp-append-version="true" />
 </head>
 
-
 <div class="section-bienvenida">
     <h1 class="display-4 fw-bold text-bienvenida">¡Bienvenido Administrador!</h1>
     <p class=" p-text">Gestión de locaciones</p>
 
 
 </div>
-<div class="container-AddLocation ">
-
-    <form asp-action="AgregarUbicacion" asp-controller="Locacion" method="post" class="form_agregar_locacion d-flex">
+<div class="container-AddLocation">
+    
+    <form id="locacionForm" asp-action="AgregarLocacion" asp-controller="Locacion" method="post" class="form_agregar_locacion d-flex">
         <div class="Agregar-section">
+            <input type="hidden" id="Id_Locacion" name="Id_Locacion" />
 
             <div class="form-floating mb-5">
-                <input type="text" class="form-control " id="floatingCiudad" placeholder="Ciudad" required>
-                <label class="text-light " for="floatingCiudad">Ciudad</label>
+				<input type="text" class="form-control text-light" id="Ciudad" placeholder="Ciudad" name="Ciudad" required />
+                <label for="Ciudad" class="form-label">Ciudad</label>
+                
             </div>
 
             <div class="form-floating mb-5">
-                <input type="text" class="form-control " id="floatingDireccion" placeholder="Dirección" required>
-                <label class="text-light " for="floatingDireccion">Dirección</label>
+                <input type="text" class="form-control text-light" id="Direccion" placeholder="Direccion" name="Direccion" required />
+                <label for="Direccion" class="form-label ">Dirección</label>
+                
             </div>
 
             <div class="d-flex gap-2 mb-4">
                 <div class="form-floating  flex-fill">
-                    <input type="text" class="form-control " id="floatingLongitud" placeholder="Longitud" required>
-                    <label class="text-light " for="floatingLongitud">Longitud</label>
+                    <input type="text" class="form-control text-light" id="Longitud" placeholder="Longitud" name="Longitud" required />
+                    <label for="Longitud" class="form-label" >Longitud</label>
                 </div>
-                <div class="form-floating flex-fill ">
-                    <input type="text" class="form-control " id="floatingLatitud" placeholder="Latitud" required>
-                    <label class="text-light " for="floatingLatitud">Latitud</label>
+                <div class="form-floating  flex-fill">
+
+                    <input type="text" class="form-control text-light" id="Latitud" placeholder="Latitud" name="Latitud" required />
+                    <label for="floatingDireccion" class="form-label" >Latitud</label>
                 </div>
             </div>
-            <button type="submit" class="btn-add btn-outline-dark text-light">Agregar</button>
+            
+
+            <button type="submit" class="btn-add btn-outline-dark text-light" id="submitButton">Agregar</button>
+            <button type="button" class="btn btn-secondary d-none" id="cancelButton">Cancelar</button>
+
         </div>
 
         <div class="section-serviceAdmin">
@@ -56,17 +63,17 @@
 
 
     </form>
-    <div class="section-division " >
-        <img  id="img-estatua1" src="/resourcesLocacion/9384265.png" alt="Imagen de prueba">
+    <div class="section-division ">
+        <img id="img-estatua1" src="/resourcesLocacion/9384265.png" alt="Imagen de prueba">
         <h1>Ubicaciones</h1>
-        <img id="img-estatua1" src="/resourcesLocacion/still-life-golden-object.png" >
+        <img id="img-estatua1" src="/resourcesLocacion/still-life-golden-object.png">
     </div>
 
     <!--Tabla de ubicaciones-->
 
     <div id="ver-ubicacion" class="section-table ">
         <table class="table table-striped ">
-            <thead class="header-table" >
+            <thead class="header-table">
                 <tr>
                     <th>ID</th>
                     <th>Ciudad</th>
@@ -89,7 +96,7 @@
                             <div class="section_editButton">
                                 <button class="btn-tabla  btn-outline-dark btn-sm editButton" data-bs-toggle="modal" data-bs-target="#editModal"
                                         data-id="@loc.id_Locacion" data-ciudad="@loc.ciudad"
-                                        data-direccion="@loc.direccion" data-latitud="@loc.latitud" data-longitud="@loc.longitud">
+                                        data-direccion="@loc.direccion" data-latitud="@loc.latitud" data-longitud="@loc.longitud" onclick="return confirm('¿Estás seguro de editar esta locación?')">
                                     Editar
                                 </button>
                             </div>
@@ -97,7 +104,7 @@
                             <div class="section_deleteButton">
                                 <form asp-action="EliminarLocacion" asp-controller="Locacion" method="post" class="d-inline">
                                     <input type="hidden" name="id" value="@loc.id_Locacion" />
-                                    <button type="submit" class="btn-tabla1 btn-outline-dark btn-sm" onclick="return confirm('¿Estás seguro de editar esta locación?')">Eliminar</button>
+                                    <button type="submit" class="btn-tabla1 btn-outline-dark btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta locación?')">Eliminar</button>
                                 </form>
                             </div>
 
@@ -110,6 +117,9 @@
     </div>
 
 </div>
+
+
+
 
 <!-- Modal de Edición -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -144,7 +154,6 @@
         </div>
     </div>
 </div>
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".editButton").forEach(button => {
@@ -159,5 +168,3 @@
 
     });
 </script>
-
-

@@ -1,0 +1,41 @@
+﻿@model GaleriaArte.Models.obra
+
+@{
+    ViewData["Title"] = "Agregar Obras";
+}
+
+<form asp-action="Agregar_Obra" asp-controller="ObrasArte" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label class="form-label">Título</label>
+        <input type="text" asp-for="titulo" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Nombre del Artista</label>
+        <input type="text" asp-for="nombre_artista" class="form-control" required>
+    </div><div class="mb-3">
+        <label class="form-label">Estilo de arte</label>
+        <input type="text" asp-for="estilo_arte" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Precio</label>
+        <input type="number" asp-for="precio" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Número de Registro</label>
+        <input type="text" asp-for="num_registro" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Descripción</label>
+        <textarea asp-for="descripcion" class="form-control" required></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="image" class="form-label fw-bold">Imagen</label>
+        <input type="file" id="image" name="file" class="form-control" accept="image/*" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Estado</label>
+        <input type="number" asp-for="estado" value="1" min="1" class="form-control">
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Agregar</button>
+</form>

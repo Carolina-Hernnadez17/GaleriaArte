@@ -24,8 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="css_E\" />
+    <Folder Include="css_E\images\" />
     <Folder Include="css_E\ResourcesProyecto\" />
+    <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\resourcesLocacion\" />
   </ItemGroup>
 

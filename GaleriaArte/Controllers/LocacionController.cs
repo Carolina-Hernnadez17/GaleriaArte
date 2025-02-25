@@ -13,7 +13,6 @@ namespace GaleriaArte.Controllers
 
         private ConexionGallery conexion = new ConexionGallery();
 
-        // Método para listar las locaciones
         public ActionResult Locacion_Admin()
         {
             List<locacion> lista = new List<locacion>();
@@ -48,15 +47,13 @@ namespace GaleriaArte.Controllers
             return View(lista);
         }
 
-        // Método para mostrar el formulario de agregar
         public ActionResult agregar()
         {
             return View("locacion");
         }
 
-        // Método para procesar la creación
         [HttpPost]
-        public ActionResult AgregarUbicacion(locacion locacion)
+        public ActionResult AgregarLocacion(locacion locacion)
         {
             try
             {
@@ -70,7 +67,8 @@ namespace GaleriaArte.Controllers
                     cmd.Parameters.AddWithValue("@longitud", locacion.longitud);
                     cmd.ExecuteNonQuery();
                 }
-                return RedirectToAction("locacion_admin");
+                ViewBag.Exito = "La ubicación se guardo correctamente !";
+                return RedirectToAction("Locacion_Admin");
             }
             catch (Exception ex)
             {
@@ -81,14 +79,12 @@ namespace GaleriaArte.Controllers
 
         }
 
-        // Método para mostrar el formulario de edición
-
         public ActionResult editar()
         {
             return View("locacion");
         }
 
-        // Método para procesar la creación
+
         [HttpPost]
         public ActionResult EditarLocacion(locacion locacion)
         {
@@ -107,19 +103,19 @@ namespace GaleriaArte.Controllers
                     cmd.Parameters.AddWithValue("@id", locacion.id_Locacion);
                     cmd.ExecuteNonQuery();
                 }
-                return RedirectToAction("locacion_Admin");
+                ViewBag.Exito = "La ubicacón se actualizo exitosamente ! ";
+                return RedirectToAction("Locacion_Admin");
+                
             }
             catch (Exception ex)
             {
                 ViewBag.Error = "Error al editar locación: " + ex.Message;
-                return RedirectToAction("locacion_Admin");
+                return RedirectToAction("Locacion_Admin");
             }
 
             
         }
 
-
-        // Método para eliminar
         public ActionResult EliminarLocacion(int id)
         {
             try
@@ -131,6 +127,7 @@ namespace GaleriaArte.Controllers
                     cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
+                ViewBag.Exito = "Ubicación eliminada exitosamente! ";
                 return RedirectToAction("Locacion_Admin");
             }
             catch (Exception ex)
