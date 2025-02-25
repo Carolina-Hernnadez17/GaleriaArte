@@ -332,7 +332,6 @@ namespace GaleriaArte.Controllers
         {
             try
             {
-                // Verificar si la exposición existe y está activa
                 var exposicion = ObtenerExposicionesPorId(exposicionId);
                 if (exposicion == null || exposicion.estado == false)
                 {
@@ -340,15 +339,12 @@ namespace GaleriaArte.Controllers
                     return View("Error");
                 }
 
-                // Obtener obras disponibles para agregar
                 var obrasDisponibles = ObtenerObrasDisponibles();
                 ViewBag.Obras = obrasDisponibles;
 
-                // Obtener las obras ya agregadas a la exposición
                 var obrasEnExposicion = ObtenerObrasEnExposicion(exposicionId);
                 ViewBag.ObrasEnExposicion = obrasEnExposicion;
 
-                // Pasar el ID de la exposición a la vista
                 ViewBag.ExposicionId = exposicionId;
                 return View();
             }
@@ -367,6 +363,19 @@ namespace GaleriaArte.Controllers
             {
                 using (var conexion = new ConexionGallery().AbrirConexion())
                 {
+                    string checkQuery = "SELECT COUNT(*) FROM exposicion_obra WHERE id_exposicion = @exposicionId AND id_obra = @obraId";
+                    using (var checkCommand = new MySqlCommand(checkQuery, conexion))
+                    {
+                        checkCommand.Parameters.AddWithValue("@exposicionId", exposicionId);
+                        checkCommand.Parameters.AddWithValue("@obraId", obraId);
+                        int count = Convert.ToInt32(checkCommand.ExecuteScalar());
+                        if (count > 0)
+                        {
+                            ViewBag.Error = "Esta obra ya se ha agregado.";
+                            return View("Error");
+                        }
+                    }
+
                     string query = "INSERT INTO exposicion_obra (id_exposicion, id_obra) VALUES (@exposicionId, @obraId)";
                     using (var command = new MySqlCommand(query, conexion))
                     {
@@ -383,6 +392,38 @@ namespace GaleriaArte.Controllers
                 ViewBag.Error = "Error al agregar la obra a la exposición.";
                 Console.WriteLine("Error: " + ex.Message);
                 return View("Error");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EliminarObraDeExposicion(int exposicionId, int obraId)
+        {
+            try
+            {
+                using (var conn = _conexionGaleria.AbrirConexion())
+                {
+                    string query = "DELETE FROM exposicion_obra WHERE id_exposicion = @exposicionId AND id_obra = @obraId";
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@exposicionId", exposicionId);
+                        cmd.Parameters.AddWithValue("@obraId", obraId);
+                        int filasAfectadas = cmd.ExecuteNonQuery();
+
+                        if (filasAfectadas > 0)
+                        {
+                            TempData["MensajeExito"] = "Obra eliminada de la exposición exitosamente.";
+                        }
+                        else
+                        {
+                            TempData["MensajeError"] = "No se pudo eliminar la obra de la exposición.";
+                        }
+                    }
+                }
+                return RedirectToAction("AgregarObra", new { exposicionId = exposicionId });
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Index", "Error", new { mensaje = "Error al eliminar la obra de la exposición: " + ex.Message });
             }
         }
 
@@ -433,7 +474,7 @@ namespace GaleriaArte.Controllers
         {
             using (var conexion = new ConexionGallery().AbrirConexion())
             {
-                string query = "SELECT id_exposicion, titulo, estado FROM exposicion WHERE id_exposicion = @exposicionId";
+                string query = "SELECT id_exposicion, titulo_exposicion, estado FROM exposicion WHERE id_exposicion = @exposicionId";
                 using (var command = new MySqlCommand(query, conexion))
                 {
                     command.Parameters.AddWithValue("@exposicionId", exposicionId);
