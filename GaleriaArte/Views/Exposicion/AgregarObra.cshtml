@@ -1,42 +1,58 @@
-﻿@model GaleriaArte.Models.AgregarObraViewModel
+﻿
+@model GaleriaArte.Models.AgregarObraViewModel
 
 @{
     ViewData["Title"] = "Agregar Obras a la Exposición";
 }
 
-<h1>Agregar Obras a la Exposición</h1>
+<h2>Agregar Obras a la Exposición</h2>
 
-@if (Model != null && Model.ExposicionId != 0)
+@if (!string.IsNullOrEmpty(ViewBag.Error))
 {
-    <p><strong>Exposición:</strong> @Model.ExposicionTitulo</p>
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
 
-    <form method="post" action="@Url.Action("GuardarObraEnExposicion", "Exposicion")">
-        <input type="hidden" name="exposicionId" value="@Model.ExposicionId" />
+<form method="post" action="@Url.Action("GuardarObra", "Exposicion")">
+    <input type="hidden" name="exposicionId" value="@ViewBag.ExposicionId" />
 
-        <div class="form-group">
-            <label for="ObrasSeleccionadas">Selecciona una o más Obras</label>
-            <select id="ObrasSeleccionadas" name="obraIds" class="form-control" multiple size="5">
-                @if (Model.ObrasDisponibles != null && Model.ObrasDisponibles.Any())
-                {
-                    foreach (var obra in Model.ObrasDisponibles)
-                    {
-                        <option value="@obra.id_obra">@obra.titulo - @obra.nombre_artista</option>
-                    }
-                }
-                else
-                {
-                    <option disabled>No hay obras disponibles</option>
-                }
-            </select>
-        </div>
+    <label for="obraId">Selecciona una Obra:</label>
+    <select name="obraId" class="form-control">
+        <option value="">Seleccione una obra</option>
+        @if (ViewBag.Obras != null && ViewBag.Obras.Count > 0)
+        {
+            @foreach (var obra in ViewBag.Obras)
+            {
+                <option value="@obra.id_obra">@obra.titulo</option>
+            }
+        }
+    </select>
 
-        <div class="form-group">
-            <button type="submit" class="btn btn-success">Agregar Obras</button>
-            <a href="@Url.Action("exposicion_admin", "Exposicion")" class="btn btn-secondary">Cancelar</a>
-        </div>
-    </form>
+    <button type="submit" class="btn btn-primary mt-2">Agregar Obra</button>
+</form>
+
+<h3 class="mt-4">Obras en esta Exposición</h3>
+@if (ViewBag.ObrasEnExposicion != null && ViewBag.ObrasEnExposicion.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var obra in ViewBag.ObrasEnExposicion)
+            {
+                <tr>
+                    <td>@obra.id_obra</td>
+                    <td>@obra.titulo</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 else
 {
-    <p>Error al cargar los datos. Intenta de nuevo.</p>
+    <p>No hay obras en esta exposición aún.</p>
 }
+

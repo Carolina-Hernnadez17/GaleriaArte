@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - GaleriaArte (Usuario)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Tu CSS general del sitio -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <!-- Estilos adicionales si los tienes -->
+    <link rel="stylesheet" href="~/GaleriaArte.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- Encabezado / Nav -->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index_usuario">
+                    GaleriaArte (Usuario)
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarUser" aria-controls="navbarUser"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarUser">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <!-- Opción: Inicio/Index del usuario -->
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index_usuario">Inicio</a>
+                        </li>
+
+                        <!-- Opción: Exposiciones para el usuario -->
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Exposicion" asp-action="exposicion_user">Exposición</a>
+                        </li>
+
+                        <!-- Opción: Obras para el usuario -->
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="ObrasArte" asp-action="obras_user">Obras</a>
+                        </li>
+
+                        <!-- Opción: Contáctanos -->
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="contactanos">Contáctanos</a>
+                        </li>
+                    </ul>
+
+                    <!-- Si deseas mostrar el link de Logout, Perfil, etc. -->
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Login" asp-action="Logout">Cerrar Sesión</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="container my-4">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Pie de página -->
+    <footer class="border-top footer text-muted py-3">
+        <div class="container">
+            &copy; 2025 - GaleriaArte (Usuario)
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -330,68 +330,62 @@ namespace GaleriaArte.Controllers
         [HttpGet]
         public IActionResult AgregarObra(int exposicionId)
         {
-            List<obra> obrasDisponibles;
-
             try
             {
-                obrasDisponibles = ObtenerObrasDisponibles() ?? new List<obra>();
+                // Verificar si la exposición existe y está activa
+                var exposicion = ObtenerExposicionesPorId(exposicionId);
+                if (exposicion == null || exposicion.estado == false)
+                {
+                    ViewBag.Error = "La exposición no existe o no está activa.";
+                    return View("Error");
+                }
+
+                // Obtener obras disponibles para agregar
+                var obrasDisponibles = ObtenerObrasDisponibles();
+                ViewBag.Obras = obrasDisponibles;
+
+                // Obtener las obras ya agregadas a la exposición
+                var obrasEnExposicion = ObtenerObrasEnExposicion(exposicionId);
+                ViewBag.ObrasEnExposicion = obrasEnExposicion;
+
+                // Pasar el ID de la exposición a la vista
+                ViewBag.ExposicionId = exposicionId;
+                return View();
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                // Aquí se capturan errores específicos, por ejemplo de conexión
-                ModelState.AddModelError("", "Error al obtener las obras disponibles: " + ex.Message);
-
-                // Retornamos una vista vacía para no romper
-                // Podrías redirigir a otra vista de error o
-                // devolver un modelo de error.
-                return View(new AgregarObraViewModel());
+                ViewBag.Error = "Error al cargar la vista de agregar obra.";
+                Console.WriteLine("Error: " + ex.Message);
+                return View("Error");
             }
-
-            var exposicion = ObtenerExposicionesPorId(exposicionId);
-
-            // Verificamos que la exposición exista y que NO esté activa (estado = false)
-            if (exposicion == null || exposicion.estado)
-            {
-                return RedirectToAction("exposicion_admin", new { error = "No se pueden agregar obras a una exposición activa o inexistente." });
-            }
-
-            var model = new AgregarObraViewModel
-            {
-                ExposicionId = exposicion.id_exposicion,
-                ExposicionTitulo = exposicion.titulo_exposicion,
-                ObrasDisponibles = obrasDisponibles
-            };
-
-            return View(model);
         }
 
         [HttpPost]
-        public IActionResult GuardarObraEnExposicion(int exposicionId, int[] obraIds)
+        public IActionResult GuardarObra(int exposicionId, int obraId)
         {
-            if (exposicionId == 0 || obraIds == null || obraIds.Length == 0)
+            try
             {
-                return RedirectToAction("exposicion_admin", new { error = "Datos inválidos." });
-            }
-
-            bool todasAgregadas = true;
-            foreach (var obraId in obraIds)
-            {
-                if (!AgregarObraAExposicion(exposicionId, obraId))
+                using (var conexion = new ConexionGallery().AbrirConexion())
                 {
-                    todasAgregadas = false;
-                    // Podrías loguear o mostrar qué obra falló.
+                    string query = "INSERT INTO exposicion_obra (id_exposicion, id_obra) VALUES (@exposicionId, @obraId)";
+                    using (var command = new MySqlCommand(query, conexion))
+                    {
+                        command.Parameters.AddWithValue("@exposicionId", exposicionId);
+                        command.Parameters.AddWithValue("@obraId", obraId);
+                        command.ExecuteNonQuery();
+                    }
                 }
-            }
 
-            if (todasAgregadas)
-            {
-                return RedirectToAction("exposicion_admin", new { success = "Obras agregadas correctamente." });
+                return RedirectToAction("AgregarObra", new { exposicionId });
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("exposicion_admin", new { error = "Alguna(s) obra(s) no se pudieron agregar." });
+                ViewBag.Error = "Error al agregar la obra a la exposición.";
+                Console.WriteLine("Error: " + ex.Message);
+                return View("Error");
             }
         }
+
 
 
         // Métodos auxiliares
@@ -435,113 +429,83 @@ namespace GaleriaArte.Controllers
             
         }
 
-        private List<obra> ObtenerObrasDisponibles()
-        {
-            var obras = new List<obra>();
-
-            using (var conn = _conexionGaleria.AbrirConexion())
-            {
-                string query = @"SELECT id_obra, 
-                                    id_cliente, 
-                                    nombre_artista, 
-                                    titulo, 
-                                    precio, 
-                                    num_registro, 
-                                    descripcion, 
-                                    estado
-                             FROM obra
-                             WHERE estado = 1";
-
-                using (var cmd = new MySqlCommand(query, conn))
-                {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var o = new obra
-                            {
-                                id_obra = reader.GetInt32("id_obra"),
-                                id_cliente = reader.GetInt32("id_cliente"),
-                                nombre_artista = reader.GetString("nombre_artista"),
-                                titulo = reader.GetString("titulo"),
-                                precio = reader.GetDecimal("precio"),
-                                num_registro = reader.GetString("num_registro"),
-                                descripcion = reader.IsDBNull(reader.GetOrdinal("descripcion"))
-                                              ? null
-                                              : reader.GetString("descripcion"),
-                                estado = reader.GetBoolean("estado")
-                            };
-                            obras.Add(o);
-                        }
-                    }
-                }
-            }
-
-            return obras;
-        }
-
         private exposicion ObtenerExposicionesPorId(int exposicionId)
         {
-            exposicion expo = null;
-
-            using (var conn = _conexionGaleria.AbrirConexion())
+            using (var conexion = new ConexionGallery().AbrirConexion())
             {
-                string query = @"SELECT id_exposicion, 
-                                    id_locacion, 
-                                    titulo_exposicion, 
-                                    descripcion, 
-                                    fecha_inicio, 
-                                    fecha_cierre, 
-                                    estado
-                             FROM exposicion
-                             WHERE id_exposicion = @id";
-
-                using (var cmd = new MySqlCommand(query, conn))
+                string query = "SELECT id_exposicion, titulo, estado FROM exposicion WHERE id_exposicion = @exposicionId";
+                using (var command = new MySqlCommand(query, conexion))
                 {
-                    cmd.Parameters.AddWithValue("@id", exposicionId);
-
-                    using (var reader = cmd.ExecuteReader())
+                    command.Parameters.AddWithValue("@exposicionId", exposicionId);
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            expo = new exposicion
+                            return new exposicion
                             {
                                 id_exposicion = reader.GetInt32("id_exposicion"),
-                                id_locacion = reader.GetInt32("id_locacion"),
                                 titulo_exposicion = reader.GetString("titulo_exposicion"),
-                                descripcion = reader.IsDBNull(reader.GetOrdinal("descripcion"))
-                                               ? null
-                                               : reader.GetString("descripcion"),
-                                fecha_inicio = reader.GetDateTime("fecha_inicio"),
-                                fecha_cierre = reader.GetDateTime("fecha_cierre"),
                                 estado = reader.GetBoolean("estado")
                             };
                         }
                     }
                 }
             }
-
-            return expo;
+            return null;
         }
 
-        private bool AgregarObraAExposicion(int exposicionId, int obraId)
+        private List<obra> ObtenerObrasDisponibles()
         {
-            using (var conn = _conexionGaleria.AbrirConexion())
+            var obras = new List<obra>();
+            using (var conexion = new ConexionGallery().AbrirConexion())
             {
-                string query = @"INSERT INTO exposicion_obra (id_exposicion, id_obra)
-                             VALUES (@exposicionId, @obraId)";
-
-                using (var cmd = new MySqlCommand(query, conn))
+                string query = "SELECT id_obra, titulo FROM obra WHERE estado = 1";
+                using (var command = new MySqlCommand(query, conexion))
                 {
-                    cmd.Parameters.AddWithValue("@exposicionId", exposicionId);
-                    cmd.Parameters.AddWithValue("@obraId", obraId);
-
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    return rowsAffected > 0;
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            obras.Add(new obra
+                            {
+                                id_obra = reader.GetInt32("id_obra"),
+                                titulo = reader.GetString("titulo")
+                            });
+                        }
+                    }
                 }
             }
+            return obras;
         }
 
+        private List<obra> ObtenerObrasEnExposicion(int exposicionId)
+        {
+            var obras = new List<obra>();
+            using (var conexion = new ConexionGallery().AbrirConexion())
+            {
+                string query = @"
+                SELECT o.id_obra, o.titulo 
+                FROM obra o
+                INNER JOIN exposicion_obra eo ON o.id_obra = eo.id_obra
+                WHERE eo.id_exposicion = @exposicionId";
 
+                using (var command = new MySqlCommand(query, conexion))
+                {
+                    command.Parameters.AddWithValue("@exposicionId", exposicionId);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            obras.Add(new obra
+                            {
+                                id_obra = reader.GetInt32("id_obra"),
+                                titulo = reader.GetString("titulo")
+                            });
+                        }
+                    }
+                }
+            }
+            return obras;
+        }
     }
 }

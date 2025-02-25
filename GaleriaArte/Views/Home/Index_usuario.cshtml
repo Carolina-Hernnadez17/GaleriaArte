@@ -1,0 +1,231 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<h1>Bienvenido a la sección de Usuario</h1>
+<p>Contenido de la página principal de usuario...</p>
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Expo - Renaissance Portrait Masters</title>
+    <!-- Referencia a Bootstrap (usa la ruta adecuada según tu proyecto) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" />
+    <!-- Tu archivo CSS personalizado si lo deseas -->
+    <link rel="stylesheet" href="~/Content/Site.css" />
+
+    <style>
+        /* Ajusta los colores y estilos a tu gusto */
+
+        body {
+            background-color: #111;  /* Fondo oscuro */
+            color: #fff;            /* Texto blanco */
+            font-family: Arial, sans-serif;
+        }
+
+        .hero-section {
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .hero-section .hero-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .hero-section .hero-date {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-presale {
+            background-color: transparent;
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .btn-presale:hover {
+            background-color: #fff;
+            color: #111;
+        }
+
+        /* Sección de eventos */
+        .events-section {
+            padding: 3rem 2rem;
+        }
+
+        .events-section h2 {
+            margin-bottom: 2rem;
+            font-weight: bold;
+        }
+
+        .event-card {
+            background-color: #222;
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .event-card .card-img-top {
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .event-card .card-body {
+            color: #fff;
+        }
+
+        .event-card .event-date {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .event-card .event-views {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        /* Sección de Newsletter */
+        .newsletter-section {
+            padding: 3rem 2rem;
+            background-color: #1a1a1a;
+        }
+
+        .newsletter-section h3 {
+            margin-bottom: 1rem;
+        }
+
+        .newsletter-section .form-control {
+            background-color: #333;
+            border: 1px solid #444;
+            color: #fff;
+        }
+
+        .newsletter-section .btn-newsletter {
+            background-color: #5cff47;
+            color: #111;
+            font-weight: bold;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .newsletter-section .btn-newsletter:hover {
+            background-color: #4acc3a;
+        }
+
+        .newsletter-section .form-check-label {
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero / Sección principal -->
+    <section class="hero-section container-fluid">
+        <div class="row align-items-center">
+            <!-- Imagen a la izquierda -->
+            <div class="col-md-5 text-center text-md-start mb-4 mb-md-0">
+                <img src="https://via.placeholder.com/400x500.png?text=Renaissance+Portrait"
+                     alt="Renaissance Portrait"
+                     class="img-fluid rounded" />
+            </div>
+            <!-- Texto a la derecha -->
+            <div class="col-md-7">
+                <h1 class="hero-title">Renaissance Portrait Masters</h1>
+                <p class="hero-date">June 21 / August 8 2025</p>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Suspendisse consequat tortor sit amet elit finibus, non pretium odio commodo.
+                    Donec fermentum neque at orci iaculis, vitae maximus nulla placerat.
+                </p>
+                <!-- Botón de pre-venta (opcional) -->
+                <button class="btn-presale">Presale Ticket</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de eventos -->
+    <section class="events-section container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Nuestros Eventos</h2>
+            <a href="#" class="text-decoration-none text-white-50">Ver más &raquo;</a>
+        </div>
+
+        <div class="row">
+            <!-- Evento 1 -->
+            <div class="col-md-4">
+                <div class="card event-card">
+                    <img src="https://via.placeholder.com/600x400.png?text=Evento+1"
+                         class="card-img-top"
+                         alt="Evento 1">
+                    <div class="card-body">
+                        <h5 class="card-title">The History of Classic Art</h5>
+                        <p class="event-date">01 Mar, 2024</p>
+                        <p class="event-views">653 vistas</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Evento 2 -->
+            <div class="col-md-4">
+                <div class="card event-card">
+                    <img src="https://via.placeholder.com/600x400.png?text=Evento+2"
+                         class="card-img-top"
+                         alt="Evento 2">
+                    <div class="card-body">
+                        <h5 class="card-title">South Asian Modern Art</h5>
+                        <p class="event-date">12 Abr, 2024</p>
+                        <p class="event-views">845 vistas</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Evento 3 -->
+            <div class="col-md-4">
+                <div class="card event-card">
+                    <img src="https://via.placeholder.com/600x400.png?text=Evento+3"
+                         class="card-img-top"
+                         alt="Evento 3">
+                    <div class="card-body">
+                        <h5 class="card-title">Refraction on Colour and Form</h5>
+                        <p class="event-date">28 May, 2024</p>
+                        <p class="event-views">920 vistas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Newsletter -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Newsletter Sign Up</h3>
+                    <p>Enter your email address</p>
+                    <form>
+                        <div class="mb-3">
+                            <input type="email" class="form-control" placeholder="you@example.com" />
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="termsCheck">
+                            <label class="form-check-label" for="termsCheck">
+                                Acepto los términos y condiciones
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-newsletter">Suscribirse</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

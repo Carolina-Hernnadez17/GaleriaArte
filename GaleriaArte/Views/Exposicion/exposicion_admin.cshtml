@@ -71,9 +71,11 @@
                         <td>@exposicion.fecha_cierre.ToString("dd/MM/yyyy")</td>
                         <td>@(exposicion.estado ? "Activa" : "Finalizada")</td>
                         <td class="btn-container">
+
                             @if (exposicion.fecha_inicio > DateTime.Now || exposicion.estado == false)
                             {
                                 <a href="@Url.Action("AgregarObra", "Exposicion", new { exposicionId = exposicion.id_exposicion })" class="btn btn-tabla">Agregar Obra</a>
+
                             }
 
                             @if (!exposicion.estado)
