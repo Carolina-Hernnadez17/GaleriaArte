@@ -13,7 +13,10 @@ namespace GaleriaArte.Controllers
         {
             _logger = logger;
         }
-
+        public ActionResult Index_usuario()
+        {
+            return View();
+        }
         
 
         public ActionResult Index()

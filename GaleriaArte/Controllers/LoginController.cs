@@ -58,12 +58,12 @@ namespace GaleriaArte.Controllers
                     // Si la contraseña es correcta y el tipo de usuario es 'false', permitimos el acceso
                     if (tipoUsuario == false)
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index_usuario", "Home");
                     }
                     else
                     {
-                        TempData["Mensaje"] = "Acceso denegado.";
-                        return RedirectToAction("Login");
+                        //TempData["Mensaje"] = "Acceso denegado.";
+                        return RedirectToAction("Index", "Home");
                     }
                 }
 
