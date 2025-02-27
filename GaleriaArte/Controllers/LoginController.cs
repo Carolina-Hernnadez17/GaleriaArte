@@ -452,7 +452,10 @@ namespace GaleriaArte.Controllers
                         MySqlCommand getUserIdCmd = new MySqlCommand(getUserIdQuery, conn);
                         int userId = Convert.ToInt32(getUserIdCmd.ExecuteScalar());
 
-                        return Json(new { success = true, userId = userId });
+                        //return Json(new { success = true, userId = userId });
+                        //return RedirectToAction("PreguntasSeguridad", new { userId = userId });
+                        return RedirectToAction("PreguntasSeguridad", new RouteValueDictionary { { "userId", userId } });
+
                     }
 
                 }
@@ -468,6 +471,7 @@ namespace GaleriaArte.Controllers
         // Acción para mostrar el formulario de pregunta de seguridad
         public IActionResult PreguntasSeguridad(int userId)
         {
+
             var preguntas = new List<string>
             {
                 "¿Cuál es tu color favorito?",

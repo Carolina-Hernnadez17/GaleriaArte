@@ -110,4 +110,21 @@
 
 </div>
 
+@section scripts {
+        $(document).ready(function () {
+        var userId = localStorage.getItem("userId"); // Recupera el userId del localStorage
+
+        if (userId) {
+            console.log("User ID recuperado del localStorage:", userId);
+            // Si quieres pasar el userId a algún campo oculto o hacer algo con él
+            // Puedes utilizarlo aquí, por ejemplo:
+            $("#userIdField").val(userId);  // Si tienes un campo oculto para el userId
+        } else {
+            console.log("No se encontró el User ID en el localStorage.");
+        }
+    });
+
+
+}
+
 
