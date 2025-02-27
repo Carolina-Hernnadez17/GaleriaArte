@@ -7,6 +7,7 @@
         public string nombre_artista { get; set; }
         public string titulo {  get; set; }
         public string estilo_arte { get; set; }
+        public int ano_creacio { get; set; }
         public decimal precio { get; set; }
         public string num_registro {  get; set; }
         

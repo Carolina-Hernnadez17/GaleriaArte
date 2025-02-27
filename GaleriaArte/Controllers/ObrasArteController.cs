@@ -42,6 +42,7 @@ namespace GaleriaArte.Controllers
                             titulo = reader.GetString("titulo"),
                             estilo_arte = reader.GetString("estilo_arte"),
                             precio = reader.GetDecimal("precio"),
+                            ano_creacio = reader.GetInt32("ano_creacio"),
                             num_registro = reader.GetString("num_registro"),
                             descripcion = reader.GetString("descripcion"),
                             imagen_url = reader["imagen_url"] as string ?? "",
@@ -62,6 +63,50 @@ namespace GaleriaArte.Controllers
 
 
         }
+
+        public IActionResult ObraDetalle(int id)
+        {
+            try
+            {
+                using (var conn = conexion.AbrirConexion())
+                {
+                    string query = "SELECT * FROM obra WHERE id_obra = @id";
+                    var command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@id", id);
+                    var reader = command.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        obra detalleObra = new obra
+                        {
+                            id_obra = reader.GetInt32("id_obra"),
+                            id_cliente = reader.GetInt32("id_cliente"),
+                            nombre_artista = reader.GetString("nombre_artista"),
+                            titulo = reader.GetString("titulo"),
+                            estilo_arte = reader.GetString("estilo_arte"),
+                            precio = reader.GetDecimal("precio"),
+                            ano_creacio = reader.GetInt32("ano_creacio"),
+                            num_registro = reader.GetString("num_registro"),
+                            descripcion = reader.GetString("descripcion"),
+                            imagen_url = reader["imagen_url"] as string ?? "",
+                            estado = reader.GetInt32("estado")
+                        };
+                        return View(detalleObra);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Error al obtener detalles de la obra: " + ex.Message;
+                return View();
+            }
+        }
+
+
 
         //public IActionResult ObrasUSer()
         //{
@@ -148,14 +193,15 @@ namespace GaleriaArte.Controllers
                 obra.id_cliente = 2;
                 using (var conn = conexion.AbrirConexion())
                 {
-                    string query = "INSERT INTO obra (id_cliente, nombre_artista, titulo, estilo_arte, precio,num_registro, descripcion, imagen_url,estado)" +
-                                    " VALUES (@id_cliente, @nombre_artista, @titulo, @estilo_arte, @precio,@num_registro, @descripcion, @imagen_url,@estado)";
+                    string query = "INSERT INTO obra (id_cliente, nombre_artista, titulo, estilo_arte, precio, ano_creacio, num_registro, descripcion, imagen_url,estado)" +
+                                    " VALUES (@id_cliente, @nombre_artista, @titulo, @estilo_arte, @precio, @ano_creacio, @num_registro, @descripcion, @imagen_url,@estado)";
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@id_cliente", obra.id_cliente);
                     cmd.Parameters.AddWithValue("@nombre_artista", obra.nombre_artista);
                     cmd.Parameters.AddWithValue("@titulo", obra.titulo);
                     cmd.Parameters.AddWithValue("@estilo_arte", obra.estilo_arte);
                     cmd.Parameters.AddWithValue("@precio", obra.precio);
+                    cmd.Parameters.AddWithValue("@ano_creacio", obra.ano_creacio);
                     cmd.Parameters.AddWithValue("@num_registro", obra.num_registro);
                     cmd.Parameters.AddWithValue("@descripcion", obra.descripcion);
                     cmd.Parameters.AddWithValue("@imagen_url", obra.imagen_url);

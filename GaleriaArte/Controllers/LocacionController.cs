@@ -59,24 +59,38 @@ namespace GaleriaArte.Controllers
             {
                 using (var conn = conexion.AbrirConexion())
                 {
-                    string query = "INSERT INTO locacion (ciudad, direccion, latitud, longitud) VALUES (@ciudad, @direccion, @latitud, @longitud)";
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@ciudad", locacion.ciudad);
-                    cmd.Parameters.AddWithValue("@direccion", locacion.direccion);
-                    cmd.Parameters.AddWithValue("@latitud", locacion.latitud);
-                    cmd.Parameters.AddWithValue("@longitud", locacion.longitud);
-                    cmd.ExecuteNonQuery();
+                    
+
+                    string queryInsertar = "INSERT INTO locacion (ciudad, direccion, latitud, longitud) VALUES (@ciudad, @direccion, @latitud, @longitud, @descripcion)";
+                    MySqlCommand cmdInsertar = new MySqlCommand(queryInsertar, conn);
+                    cmdInsertar.Parameters.AddWithValue("@ciudad", locacion.ciudad);
+                    cmdInsertar.Parameters.AddWithValue("@direccion", locacion.direccion);
+                    cmdInsertar.Parameters.AddWithValue("@latitud", locacion.latitud);
+                    cmdInsertar.Parameters.AddWithValue("@longitud", locacion.longitud);
+                    cmdInsertar.Parameters.AddWithValue("@descripcion", locacion.descripcion);
+                    cmdInsertar.ExecuteNonQuery();
                 }
-                ViewBag.Exito = "La ubicación se guardo correctamente !";
+
+                TempData["Exito"] = "La ubicacion se ha agregado correctamente.";
+                return RedirectToAction("Locacion_Admin");
+            }
+            catch (MySqlException ex)
+            {
+                if (ex.Number == 1062) 
+                {
+                    TempData["Error"] = "Ya existe una ubicacion con la misma ciudad y direccion.";
+                }
+                else
+                {
+                    TempData["Error"] = "Error al agregar la ubicacion: " + ex.Message;
+                }
                 return RedirectToAction("Locacion_Admin");
             }
             catch (Exception ex)
             {
-                ViewBag.Error = "Error al agregar locación: " + ex.Message;
-                return View();
+                TempData["Error"] = "Error al agregar la ubicacion: " + ex.Message;
+                return RedirectToAction("Locacion_Admin");
             }
-
-
         }
 
         public ActionResult editar()
@@ -92,7 +106,8 @@ namespace GaleriaArte.Controllers
             {
                 using (var conn = conexion.AbrirConexion())
                 {
-                    string query = "UPDATE locacion SET ciudad = @ciudad, direccion = @direccion, latitud = @latitud, longitud = @longitud " +
+                    string query = "UPDATE locacion SET ciudad = @ciudad, direccion = @direccion," +
+                        "           latitud = @latitud, longitud = @longitud , descripcion = @descripcion " +
                                     "WHERE id_locacion = @id\r\n";
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     
@@ -101,15 +116,16 @@ namespace GaleriaArte.Controllers
                     cmd.Parameters.AddWithValue("@latitud", locacion.latitud);
                     cmd.Parameters.AddWithValue("@longitud", locacion.longitud);
                     cmd.Parameters.AddWithValue("@id", locacion.id_Locacion);
+                    cmd.Parameters.AddWithValue("@descripcion", locacion.descripcion);
                     cmd.ExecuteNonQuery();
                 }
-                ViewBag.Exito = "La ubicacón se actualizo exitosamente ! ";
+                TempData["Exito"] = "La ubicacion se actualizo correctamente!";
                 return RedirectToAction("Locacion_Admin");
                 
             }
             catch (Exception ex)
             {
-                ViewBag.Error = "Error al editar locación: " + ex.Message;
+                TempData["Error"] = "Error al editar locacion: " + ex.Message;
                 return RedirectToAction("Locacion_Admin");
             }
 
@@ -127,12 +143,12 @@ namespace GaleriaArte.Controllers
                     cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
-                ViewBag.Exito = "Ubicación eliminada exitosamente! ";
+                TempData["Exito"] = "La ubicación se elimino correctamente";
                 return RedirectToAction("Locacion_Admin");
             }
             catch (Exception ex)
             {
-                ViewBag.Error = "Error al eliminar locación: " + ex.Message;
+                TempData["Error"] = "Error al eliminara locacion: " + ex.Message;
                 return RedirectToAction("Locacion_Admin");
             }
         }

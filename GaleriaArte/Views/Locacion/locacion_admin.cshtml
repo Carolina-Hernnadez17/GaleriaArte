@@ -5,166 +5,264 @@
 }
 
 <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="~/css/locacionStyle.css" asp-append-version="true" />
+    
 </head>
 
-<div class="section-bienvenida">
-    <h1 class="display-4 fw-bold text-bienvenida">¡Bienvenido Administrador!</h1>
-    <p class=" p-text">Gestión de locaciones</p>
+<body>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function MensajeExito(mensaje) {
+                Swal.fire({
+                    title: mensaje,
+                    icon: 'success',
+                    confirmButtonColor: '#3085d6',
+                    draggable: true
+                });
+            }
 
+            function MensajeError(mensaje) {
+                Swal.fire({
+                    title: 'Ocurrió un error',
+                    text: mensaje,
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
 
-</div>
-<div class="container-AddLocation">
-    
-    <form id="locacionForm" asp-action="AgregarLocacion" asp-controller="Locacion" method="post" class="form_agregar_locacion d-flex">
-        <div class="Agregar-section">
-            <input type="hidden" id="Id_Locacion" name="Id_Locacion" />
-
-            <div class="form-floating mb-5">
-				<input type="text" class="form-control text-light" id="Ciudad" placeholder="Ciudad" name="Ciudad" required />
-                <label for="Ciudad" class="form-label">Ciudad</label>
-                
-            </div>
-
-            <div class="form-floating mb-5">
-                <input type="text" class="form-control text-light" id="Direccion" placeholder="Direccion" name="Direccion" required />
-                <label for="Direccion" class="form-label ">Dirección</label>
-                
-            </div>
-
-            <div class="d-flex gap-2 mb-4">
-                <div class="form-floating  flex-fill">
-                    <input type="text" class="form-control text-light" id="Longitud" placeholder="Longitud" name="Longitud" required />
-                    <label for="Longitud" class="form-label" >Longitud</label>
-                </div>
-                <div class="form-floating  flex-fill">
-
-                    <input type="text" class="form-control text-light" id="Latitud" placeholder="Latitud" name="Latitud" required />
-                    <label for="floatingDireccion" class="form-label" >Latitud</label>
-                </div>
-            </div>
             
+        @if (TempData["Exito"] != null)
+        {
+            <text>
+                    
+                    MensajeExito('@TempData["Exito"]');
+            </text>
+        }
 
-            <button type="submit" class="btn-add btn-outline-dark text-light" id="submitButton">Agregar</button>
-            <button type="button" class="btn btn-secondary d-none" id="cancelButton">Cancelar</button>
+        @if (TempData["Error"] != null)
+        {
+            <text>
+                    
+                    MensajeError('@TempData["Error"]');
+            </text>
+        }
+        });
+    </script>
 
-        </div>
-
-        <div class="section-serviceAdmin">
-            <h2>Nuestros servicios</h2>
-            <p><p>
-                En este panel puedes agregar nuevas ubicaciones para realizar exposiciones futuras.
-                Completa los campos con la información de la ciudad, dirección y coordenadas geográficas
-                para registrar correctamente cada locación. Además, puedes editar o eliminar ubicaciones
-                existentes según sea necesario para mantener la información actualizada.
-            </p>
-            <a class="section-ubicacion" href="#ver-ubicacion">Ver ubicaciones</a>
-        </div>
-
-
-    </form>
-    <div class="section-division ">
-        <img id="img-estatua1" src="/resourcesLocacion/9384265.png" alt="Imagen de prueba">
-        <h1>Ubicaciones</h1>
-        <img id="img-estatua1" src="/resourcesLocacion/still-life-golden-object.png">
+    <div class="section-bienvenida">
+        <h1 class="display-4 fw-bold text-bienvenida">¡Bienvenido Administrador!</h1>
+        <p class="p-text">Gestión de locaciones</p>
     </div>
 
-    <!--Tabla de ubicaciones-->
+    <div class="container-AddLocation">
+        <form id="locacionForm" asp-action="AgregarLocacion" asp-controller="Locacion" method="post" class="form_agregar_locacion d-flex">
+            <div class="Agregar-section">
+                <input type="hidden" id="Id_Locacion" name="Id_Locacion" />
+                <div class="form-floating mb-5">
+                    <input type="text" class="form-control text-light" id="Ciudad" placeholder="Ciudad" name="Ciudad" required />
+                    <label for="Ciudad" class="form-label">Ciudad</label>
+                </div>
+                <div class="form-floating mb-5">
+                    <input type="text" class="form-control text-light" id="Direccion" placeholder="Direccion" name="Direccion" required />
+                    <label for="Direccion" class="form-label">Dirección</label>
+                </div>
+                <div class="d-flex gap-2 mb-4">
+                    <div class="form-floating flex-fill">
+                        <input type="text" class="form-control text-light" id="Longitud" placeholder="Longitud" name="Longitud" required />
+                        <label for="Longitud" class="form-label">Longitud</label>
+                    </div>
+                    <div class="form-floating flex-fill">
+                        <input type="text" class="form-control text-light" id="Latitud" placeholder="Latitud" name="Latitud" required />
+                        <label for="Latitud" class="form-label">Latitud</label>
+                    </div>
+                    
+                </div>
+                <div class="form-floating flex-fill">
+                    <input type="text" class="form-control text-light" id="Descripcion" placeholder="Descripcion" name="Descripcion" required />
+                    <label for="Descripcion" class="form-label">Descripción</label>
+                </div>
+                <button type="submit" class="btn-add btn-outline-dark text-light" id="submitButton">Agregar</button>
+                <button type="button" class="btn btn-secondary d-none" id="cancelButton">Cancelar</button>
+            </div>
+            <div class="section-serviceAdmin">
+                <h2>Nuestros servicios</h2>
+                <p>
+                    En este panel puedes agregar nuevas ubicaciones para realizar exposiciones futuras.
+                    Completa los campos con la información de la ciudad, dirección y coordenadas geográficas
+                    para registrar correctamente cada locación. Además, puedes editar o eliminar ubicaciones
+                    existentes según sea necesario para mantener la información actualizada.
+                </p>
+                <a class="section-ubicacion" href="#ver-ubicacion">Ver ubicaciones</a>
+            </div>
+        </form>
 
-    <div id="ver-ubicacion" class="section-table ">
-        <table class="table table-striped ">
-            <thead class="header-table">
-                <tr>
-                    <th>ID</th>
-                    <th>Ciudad</th>
-                    <th>Dirección</th>
-                    <th>Latitud</th>
-                    <th>Longitud</th>
-                    <th class="th-action ">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var loc in Model)
-                {
-                    <tr class="section-bodyTable">
-                        <td>@loc.id_Locacion</td>
-                        <td>@loc.ciudad</td>
-                        <td>@loc.direccion</td>
-                        <td>@loc.latitud</td>
-                        <td>@loc.longitud</td>
-                        <td class="section-button">
-                            <div class="section_editButton">
-                                <button class="btn-tabla  btn-outline-dark btn-sm editButton" data-bs-toggle="modal" data-bs-target="#editModal"
-                                        data-id="@loc.id_Locacion" data-ciudad="@loc.ciudad"
-                                        data-direccion="@loc.direccion" data-latitud="@loc.latitud" data-longitud="@loc.longitud" onclick="return confirm('¿Estás seguro de editar esta locación?')">
-                                    Editar
-                                </button>
-                            </div>
-
-                            <div class="section_deleteButton">
-                                <form asp-action="EliminarLocacion" asp-controller="Locacion" method="post" class="d-inline">
-                                    <input type="hidden" name="id" value="@loc.id_Locacion" />
-                                    <button type="submit" class="btn-tabla1 btn-outline-dark btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta locación?')">Eliminar</button>
-                                </form>
-                            </div>
-
-                        </td>
-
+        <div class="section-division">
+            <img id="img-estatua1" src="/resourcesLocacion/9384265.png" alt="Imagen de prueba">
+            <h1>Ubicaciones</h1>
+            <img id="img-estatua1" src="/resourcesLocacion/still-life-golden-object.png">
+        </div>
+        <div class="buscador">
+            <input type="text" id="searchInput" oninput="filtrarLocaciones()" placeholder="Buscar locaciones por ciudad, dirección o descripción...">
+        </div>
+        <div id="ver-ubicacion" class="section-table">
+            <table class="table table-striped">
+                <thead class="header-table">
+                    <tr>
+                        <th>ID</th>
+                        <th>Ciudad</th>
+                        <th>Dirección</th>
+                        <th>Latitud</th>
+                        <th>Longitud</th>
+                        <th>Descripcion</th>
+                        <th class="th-action">Acciones</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr class="section-bodyTable locacion-item @(i >= 25 ? "hidden-row" : "")" data-ciudad="@Model[i].ciudad">
+                            <td>@Model[i].id_Locacion</td>
+                            <td>@Model[i].ciudad</td>
+                            <td>@Model[i].direccion</td>
+                            <td>@Model[i].latitud</td>
+                            <td>@Model[i].longitud</td>
+                            <td>@Model[i].descripcion</td>
+                            <td class="section-button">
+                                <div class="section_editButton">
+                                    <button class="btn-tabla btn-outline-dark btn-sm editButton" data-bs-toggle="modal" data-bs-target="#editModal"
+                                            data-id="@Model[i].id_Locacion" data-ciudad="@Model[i].ciudad"
+                                            data-direccion="@Model[i].direccion" data-latitud="@Model[i].latitud" data-longitud="@Model[i].longitud" type="submit">
+                                        Editar
+                                    </button>
+                                </div>
+                                <div class="section_deleteButton">
+                                    <form asp-action="EliminarLocacion" asp-controller="Locacion" method="post" class="d-inline" onsubmit="return confirmarEliminacion(event)">
+                                        <input type="hidden" name="id" value="@Model[i].id_Locacion" />
+                                        <button type="submit" class="btn-tabla1 btn-outline-dark btn-sm">Eliminar</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="btn-cargar-mas">
+            <button id="btnCargarMas" class="btn btn-primary">Cargar más</button>
+        </div>
+        </div>
     </div>
 
-</div>
-
-
-
-
-<!-- Modal de Edición -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Editar Locación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form asp-action="EditarLocacion" asp-controller="Locacion" method="post">
-                    <input type="hidden" id="editId_Locacion" name="Id_Locacion" />
-                    <div class="mb-3">
-                        <label for="editCiudad" class="form-label">Ciudad</label>
-                        <input type="text" class="form-control" id="editCiudad" name="Ciudad" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="editDireccion" class="form-label">Dirección</label>
-                        <input type="text" class="form-control" id="editDireccion" name="Direccion" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="editLatitud" class="form-label">Latitud</label>
-                        <input type="text" class="form-control" id="editLatitud" name="Latitud" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="editLongitud" class="form-label">Longitud</label>
-                        <input type="text" class="form-control" id="editLongitud" name="Longitud" required />
-                    </div>
-                    <button type="submit" class="btn btn-primary">Actualizar</button>
-                </form>
+    <!-- Modal de Edición -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar Locación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="EditarLocacion" asp-controller="Locacion" method="post">
+                        <input type="hidden" id="editId_Locacion" name="Id_Locacion" />
+                        <div class="mb-3">
+                            <label for="editCiudad" class="form-label">Ciudad</label>
+                            <input type="text" class="form-control text-light" id="editCiudad" name="Ciudad" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDireccion" class="form-label">Dirección</label>
+                            <input  type="text" class="form-control text-light" id="editDireccion" name="Direccion" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLatitud" class="form-label">Latitud</label>
+                            <input type="text" class="form-control text-light" id="editLatitud" name="Latitud" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLongitud" class="form-label">Longitud</label>
+                            <input type="text" class="form-control text-light" id="editLongitud" name="Longitud" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDescripcion" class="form-label">Descripcion</label>
+                            <input type="text" class="form-control text-light" id="editDescripcion" name="Descripcion" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".editButton").forEach(button => {
-            button.addEventListener("click", function () {
-                document.getElementById("editId_Locacion").value = this.getAttribute("data-id");
-                document.getElementById("editCiudad").value = this.getAttribute("data-ciudad");
-                document.getElementById("editDireccion").value = this.getAttribute("data-direccion");
-                document.getElementById("editLatitud").value = this.getAttribute("data-latitud");
-                document.getElementById("editLongitud").value = this.getAttribute("data-longitud");
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function filtrarLocaciones() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const locaciones = document.querySelectorAll('.locacion-item');
+            locaciones.forEach(locacion => {
+                const text = locacion.innerText.toLowerCase();
+                locacion.style.display = text.includes(input) ? '' : 'none';
             });
+        }
+
+        function filtrarPorCiudad(ciudad) {
+            const locaciones = document.querySelectorAll('.locacion-item');
+            locaciones.forEach(locacion => {
+                const locacionCiudad = locacion.getAttribute('data-ciudad');
+                locacion.style.display = locacionCiudad === ciudad ? '' : 'none';
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            
+            const filasOcultas = document.querySelectorAll('.hidden-row');
+            filasOcultas.forEach(fila => fila.style.display = 'none');
+
+            
+            const btnCargarMas = document.getElementById('btnCargarMas');
+            let filasVisibles = 25;
+
+            btnCargarMas.addEventListener('click', function () {
+                const filasOcultas = document.querySelectorAll('.hidden-row');
+                for (let i = filasVisibles; i < filasVisibles + 25 && i < filasOcultas.length; i++) {
+                    filasOcultas[i].style.display = '';
+                }
+                filasVisibles += 25;
+
+                
+                if (filasVisibles >= filasOcultas.length + 25) {
+                    btnCargarMas.style.display = 'none';
+                }
+            });
+
         });
 
-    });
-</script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".editButton").forEach(button => {
+                button.addEventListener("click", function () {
+                    document.getElementById("editId_Locacion").value = this.getAttribute("data-id");
+                    document.getElementById("editCiudad").value = this.getAttribute("data-ciudad");
+                    document.getElementById("editDireccion").value = this.getAttribute("data-direccion");
+                    document.getElementById("editLatitud").value = this.getAttribute("data-latitud");
+                    document.getElementById("editLongitud").value = this.getAttribute("data-longitud");
+                    document.getElementById("editDescripcion").value = this.getAttribute("data-descripcion")
+                });
+            });
+        });
+        function confirmarEliminacion(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡No podrás revertir esto!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.submit();
+                }
+            });
+        }
+    </script>
+</body>

@@ -1,0 +1,169 @@
+﻿
+body {
+    background-color: #111;
+    border-bottom: 20px;
+}
+
+/* Estilos para el carrusel */
+
+
+.boton-ver {
+    border-radius: 15px;
+    width: 150px;
+    height: 50px;
+    font-size: 15px;
+    margin-top: 15px;
+    background-color: #333432;
+}
+.carousel {
+    max-width: 100%;
+    width: 100%;
+    padding-top: 10%;
+    color: white;
+    
+}
+
+.carousel-inner{
+    margin-inline: 80px;
+}
+.section-inicio {
+    background: linear-gradient(to bottom, rgba(17, 17, 17, 1) 0%,
+                                rgba(17, 17, 17, 0) 25%,
+                                rgba(17, 17, 17, 0) 75%, 
+                                rgba(17, 17, 17, 1) 100% ), 
+                                url('../css_E/ResourcesProyecto/pexels-pixabay-460736.jpg');
+    width: 100%;
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    margin-top: 50px;
+    
+}
+
+.carousel-item h5 {
+    color: #a46946;
+    font-size: 30px;
+    margin-top: 50px;
+
+}
+.carousel-item p{
+    color: white;
+}
+
+ /* Estilos para las imágenes del carrusel */
+.carousel-item img {
+    width:100%;
+    height: 300px;
+    object-fit: cover; 
+    border-radius: 10px; 
+}
+
+
+.texto-ver-obra{
+    padding:20px;
+    font-size: 60px;
+    text-align: right;
+    margin-right: 125px;
+    padding-top: 40px;
+    
+}
+
+.section-inicio h2 {
+    font-family: 'Charm', cursive !important;
+    font-weight: 400;
+    font-size: 100px;
+    font-style: normal;
+}
+.info-text {
+    margin-top: 50px;
+    
+    
+}
+
+/*Listado de obras*/
+.listado-obras {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+}
+
+.texto-lista {
+    padding: 100px;
+    color: white;
+    font-family: "Charm", serif;
+    font-style: normal;
+}
+
+
+.card {
+    border: none;
+    box-shadow: 0 4px 20px #333432e5;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    margin: 30px;
+    background: #281e18f1;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(17, 17, 17, 0);
+}
+
+.card-img-top {
+    height: 270px;
+    margin-right: 80px;
+    background: #281e18f1;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: 10px;
+    padding-bottom: 45px;
+    background: #281e18f1;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: bold;
+    
+    color: #d19a79;
+}
+
+.card-text {
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    color: white;
+
+}
+
+.card h5{
+    text-align:center;
+}
+.estado-no-disponible-list {
+    color: red;
+    font-weight: bold;
+}
+
+.estado-disponible-list {
+    color: #d19a79;
+    font-weight: bold;
+}
+
+.disabled-card {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.obra-item{
+    padding-bottom: 100px;
+}
