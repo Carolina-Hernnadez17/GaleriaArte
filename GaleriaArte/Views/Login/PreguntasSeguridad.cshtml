@@ -60,32 +60,7 @@
     <hr />
 
     <br />
-    @* <form method="post" action="@Url.Action("GuardarPreguntasSeguridad")">
-        <input type="hidden" name="UserId" value="@Model.UserId" />
-
-        <div>
-            <label class="text-light" for="question">Selecciona una pregunta de seguridad</label>
-            <br />
-
-            <select class="form-control" name="Question" id="question" required>
-                @foreach (var pregunta in ViewBag.Preguntas as List<string>)
-                {
-                    <option value="@pregunta">@pregunta</option>
-                }
-            </select>
-        </div>
-        <br />
-
-        <div>
-            <label class="text-light" for="answer">Respuesta</label>
-            <br />
-
-             <input class="form-control" type="text" name="Answer" id="answer" required />
-         </div>
-
-        <br />
-        <button class="btn-register text-light" type="submit">Guardar Respuesta</button>
-    </form> *@
+   
     <form method="post" action="@Url.Action("GuardarPreguntasSeguridad")">
         <input type="hidden" name="UserId" value="@Model.UserId" />
 
