@@ -33,7 +33,8 @@ namespace GaleriaArte.Controllers
                             ciudad = reader["ciudad"].ToString(),
                             direccion = reader["direccion"].ToString(),
                             latitud = reader["latitud"].ToString(),
-                            longitud = reader["longitud"].ToString()
+                            longitud = reader["longitud"].ToString(),
+                            descripcion = reader["descripcion"].ToString()
                         });
                     }
                     reader.Close();
@@ -61,7 +62,7 @@ namespace GaleriaArte.Controllers
                 {
                     
 
-                    string queryInsertar = "INSERT INTO locacion (ciudad, direccion, latitud, longitud) VALUES (@ciudad, @direccion, @latitud, @longitud, @descripcion)";
+                    string queryInsertar = "INSERT INTO locacion (ciudad, direccion, latitud, longitud, descripcion) VALUES (@ciudad, @direccion, @latitud, @longitud, @descripcion)";
                     MySqlCommand cmdInsertar = new MySqlCommand(queryInsertar, conn);
                     cmdInsertar.Parameters.AddWithValue("@ciudad", locacion.ciudad);
                     cmdInsertar.Parameters.AddWithValue("@direccion", locacion.direccion);
