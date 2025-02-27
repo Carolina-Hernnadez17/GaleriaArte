@@ -206,15 +206,6 @@ namespace GaleriaArte.Controllers
                     int userId = Convert.ToInt32(reader["id_cusuario"]);
                     reader.Close();
 
-                    //// Actualizamos la contraseña
-                    //string queryEdit = "UPDATE usuario SET contrasena = @Contrasena WHERE correo = @Correo";
-                    //MySqlCommand cm = new MySqlCommand(queryEdit, conn);
-                    //cm.Parameters.AddWithValue("@Correo", usuario.Correo);
-                    //cm.Parameters.AddWithValue("@Contrasena", usuario.Contrasena);
-
-                    //cm.ExecuteNonQuery();
-
-                    // Si la actualización fue exitosa y el tipo de usuario es 'false', permitimos el acceso
                     if (tipoUsuario == false)
                     {
                         return RedirectToAction("BuscarPreguntas", new { userId = userId });
@@ -456,16 +447,12 @@ namespace GaleriaArte.Controllers
                         cmd.ExecuteNonQuery();
 
 
-                        //return RedirectToAction("Login", "Login");
                         // Obtener el ID del usuario recién insertado
                         string getUserIdQuery = "SELECT LAST_INSERT_ID()";
                         MySqlCommand getUserIdCmd = new MySqlCommand(getUserIdQuery, conn);
                         int userId = Convert.ToInt32(getUserIdCmd.ExecuteScalar());
 
-                        // Redirigir al formulario de seguridad pasando el userId como parámetro
-                        // Devolver el ID de usuario al cliente como parte de la respuesta
                         return Json(new { success = true, userId = userId });
-                        //return RedirectToAction("PreguntasSeguridad", new { userId = userId });
                     }
 
                 }

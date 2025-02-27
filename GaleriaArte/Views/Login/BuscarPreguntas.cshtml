@@ -1,26 +1,61 @@
 ﻿@model GaleriaArte.Models.preguntasModel
 
-<h2>Responde tus preguntas de seguridad</h2>
-
-@if (!string.IsNullOrEmpty(ViewBag.Msm))
-{
-    <div class="alert alert-danger">@ViewBag.Msm</div>
+@{
+    Layout = null; // Quitar el layout para esta vista
 }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restablecer Contraseñaa - GaleriaArte</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/11.0.16/sweetalert2.min.css">
+    <link rel="stylesheet" href="../css_R/Loginn.css" />
+</head>
 
-<form asp-controller="Login" asp-action="ValidarRespuestas" method="post">
-    <input type="hidden" name="UserId" value="@Model.UserId" />
+<div class="register-container text-center"> 
+    <img class="left-image" src="../css_R/Resources_Login/descarga.jpg" />
+    <hr />
+    <br />
 
-    <div class="mb-3">
-        <label class="form-label">@Model.Question1</label>
-        <input type="hidden" name="Question1" value="@Model.Question1" />
-        <input type="text" class="form-control" name="Answer1" required>
-    </div>
+    <form asp-controller="Login" asp-action="ValidarRespuestas" method="post">
+        @if (!string.IsNullOrEmpty(ViewBag.Msm))
+        {
+            <div class="alert alert-danger">@ViewBag.Msm</div>
+        }
+        <h2>Responde tus preguntas de seguridad</h2>
+        <br />
 
-    <div class="mb-3">
-        <label class="form-label">@Model.Question2</label>
-        <input type="hidden" name="Question2" value="@Model.Question2" />
-        <input type="text" class="form-control" name="Answer2" required>
-    </div>
+        <input type="hidden" name="UserId" value="@Model.UserId" />
 
-    <button type="submit" class="btn btn-primary">Validar</button>
-</form>
+        <div class="mb-3">
+            <label class="form-label">@Model.Question1</label>
+            <br />
+
+            <input class="form-control" type="hidden" name="Question1" value="@Model.Question1" />
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-question-circle"></i></span>
+                <input class="form-control" type="text" class="form-control" name="Answer1" required>
+
+            </div>
+        </div>
+        <br />
+
+        <div class="mb-3">
+            <label class="form-label">@Model.Question2</label>
+            <br />
+
+            <input class="form-control" type="hidden" name="Question2" value="@Model.Question2" />
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-question-circle"></i></span>
+                <input class="form-control" type="text" class="form-control" name="Answer2" required>
+
+            </div>
+        </div>
+        <br />
+
+        <button type="submit" class="btn btn-register">Validar</button>
+    </form>
+
+</div>
+
