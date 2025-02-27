@@ -10,56 +10,62 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GaleriaArte</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">GaleriaArte</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="Exposicion" asp-action="exposicion_admin">Exposición</a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="Historial" asp-action="Historial">Historial Exposición</a>
+                            <a class="nav-link text-dark" asp-controller="Exposicion" asp-action="exposicion_admin">Exposición</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="Locacion" asp-action="locacion_admin">Locación</a>
+                            <a class="nav-link text-dark" asp-controller="Historial" asp-action="Historial">Historial</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="Login" asp-action="login">Login</a>
+                            <a class="nav-link text-dark" asp-controller="Locacion" asp-action="locacion_admin">Locación</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="Login" asp-action="Registro">Registrar admin</a>
+                            <a class="nav-link text-dark" asp-controller="Login" asp-action="Registro">Registrar Admin</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="ObrasArte" asp-action="Agregar_Obra">Agregar Obra</a>
+                            <a class="nav-link text-dark" asp-controller="ObrasArte" asp-action="Agregar_Obra">Agregar Obra</a>
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-danger text-white px-3" asp-controller="Login" asp-action="Logout">Cerrar Sesión</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted text-center py-3">
         <div class="container">
             &copy; 2025 - GaleriaArte - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
