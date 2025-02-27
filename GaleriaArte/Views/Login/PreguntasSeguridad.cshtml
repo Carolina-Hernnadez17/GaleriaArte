@@ -1,0 +1,138 @@
+﻿@model preguntasModel
+@{
+    ViewBag.Title = "Formulario de Pregunta de Seguridad";
+    Layout = null;
+}
+
+<style>
+    body {
+        background: url('../css_R/Resources_Login/descarga.jpg') no-repeat center center/cover;
+        backdrop-filter: blur(40px);
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #FCFCFC;
+    }
+
+    .register-container {
+        max-width: 900px;
+        background: rgba(25, 25, 25, 0.9);
+        border-radius: 15px;
+        padding: 50px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        color: white;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        background: #101010;
+        color: white;
+        border: 1px solid #6f4832;
+        padding: 10px;
+        width: 80%;
+    }
+
+    .btn-register {
+        background-color: #6f4832;
+        border: none;
+        border-radius: 10px;
+        padding: 10px;
+        color: white;
+        width: 100%;
+    }
+
+        .btn-register:hover {
+            background-color: #573b29;
+        }
+
+    .text-light {
+        color: white !important;
+    }
+
+</style>
+<div class="register-container text-center">
+    <h2 class="text-light">
+        A continuacion responde cada pregunta             <br />
+        para la seguridad de tu cuenta.             <br />
+        Esto te servira en caso de perder tu contraseña
+    </h2>
+    <hr />
+
+    <br />
+    @* <form method="post" action="@Url.Action("GuardarPreguntasSeguridad")">
+        <input type="hidden" name="UserId" value="@Model.UserId" />
+
+        <div>
+            <label class="text-light" for="question">Selecciona una pregunta de seguridad</label>
+            <br />
+
+            <select class="form-control" name="Question" id="question" required>
+                @foreach (var pregunta in ViewBag.Preguntas as List<string>)
+                {
+                    <option value="@pregunta">@pregunta</option>
+                }
+            </select>
+        </div>
+        <br />
+
+        <div>
+            <label class="text-light" for="answer">Respuesta</label>
+            <br />
+
+             <input class="form-control" type="text" name="Answer" id="answer" required />
+         </div>
+
+        <br />
+        <button class="btn-register text-light" type="submit">Guardar Respuesta</button>
+    </form> *@
+    <form method="post" action="@Url.Action("GuardarPreguntasSeguridad")">
+        <input type="hidden" name="UserId" value="@Model.UserId" />
+
+        <!-- Primera Pregunta -->
+        <div>
+            <label class="text-light" for="question1">Selecciona una pregunta de seguridad 1</label>
+            <br />
+            <select class="form-control" name="Question1" id="question1" required>
+                @foreach (var pregunta in ViewBag.Preguntas as List<string>)
+                {
+                    <option value="@pregunta">@pregunta</option>
+                }
+            </select>
+        </div>
+        <br />
+
+        <div>
+            <label class="text-light" for="answer1">Respuesta 1</label>
+            <br />
+            <input class="form-control" type="text" name="Answer1" id="answer1" required />
+        </div>
+
+        <br />
+
+        <!-- Segunda Pregunta -->
+        <div>
+            <label class="text-light" for="question2">Selecciona una pregunta de seguridad 2</label>
+            <br />
+            <select class="form-control" name="Question2" id="question2" required>
+                @foreach (var pregunta2 in ViewBag.Preguntas2 as List<string>)
+                {
+                    <option value="@pregunta2">@pregunta2</option>
+                }
+            </select>
+        </div>
+        <br />
+
+        <div>
+            <label class="text-light" for="answer2">Respuesta 2</label>
+            <br />
+            <input class="form-control" type="text" name="Answer2" id="answer2" required />
+        </div>
+
+        <br />
+        <button class="btn-register text-light" type="submit">Guardar Respuestas</button>
+    </form>
+
+</div>
+
+
