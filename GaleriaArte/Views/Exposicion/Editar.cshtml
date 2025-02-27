@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Editar Exposición";
+    var locSelectList = ViewBag.Locaciones as SelectList;
+    var estadosList = ViewBag.Estados as List<SelectListItem>;
 }
 
 <head>
@@ -17,56 +19,31 @@
         <div class="mb-3">
             <label for="titulo_exposicion" class="form-label">Título de la Exposición</label>
             <input type="text" id="titulo_exposicion" name="titulo_exposicion" class="form-control" value="@Model.titulo_exposicion" required />
-            <div class="invalid-feedback">
-                Por favor, ingrese un título.
-            </div>
         </div>
 
         <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción</label>
             <textarea id="descripcion" name="descripcion" class="form-control" required>@Model.descripcion</textarea>
-            <div class="invalid-feedback">
-                La descripción es obligatoria.
-            </div>
         </div>
 
         <div class="mb-3">
             <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
             <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" value="@Model.fecha_inicio.ToString("yyyy-MM-dd")" required />
-            <div class="invalid-feedback">
-                Por favor, seleccione una fecha de inicio.
-            </div>
         </div>
 
         <div class="mb-3">
             <label for="fecha_cierre" class="form-label">Fecha de Cierre</label>
             <input type="date" id="fecha_cierre" name="fecha_cierre" class="form-control" value="@Model.fecha_cierre.ToString("yyyy-MM-dd")" required />
-            <div class="invalid-feedback">
-                Por favor, seleccione una fecha de cierre.
-            </div>
         </div>
 
-        <div class="mb-3">
-            <label for="id_locacion" class="form-label">Locación</label>
-            @Html.DropDownListFor(
-                     model => model.id_locacion,
-                     new SelectList(ViewBag.Locaciones, "id_Locacion", "ciudad"),
-                     "Seleccione una locación",
-                     new { @class = "form-control", @required = "required" }
-                     )
+        <div class="form-group mb-3">
+            <label for="id_locacion">Locación</label>
+            @Html.DropDownListFor(model => model.id_locacion, (SelectList)ViewBag.Locaciones, "Seleccione una locación", new { @class = "form-control" })
         </div>
 
-        <div class="mb-3">
-            <label for="estado" class="form-label">Estado</label>
-            @Html.DropDownListFor(
-                     model => model.estado,
-                     new SelectList(new List<SelectListItem>
-            {
-            new SelectListItem { Text = "Activa", Value = "true" },
-            new SelectListItem { Text = "Finalizada", Value = "false" }
-            }, "Value", "Text"),
-                     new { @class = "form-control", @required = "required" }
-                     )
+        <div class="form-group mb-3">
+            <label for="estado">Estado</label>
+            @Html.DropDownListFor(model => model.estado, (IEnumerable<SelectListItem>)ViewBag.Estados, "Seleccione un estado", new { @class = "form-control" })
         </div>
 
         <div class="d-flex justify-content-start mt-4">
@@ -76,11 +53,72 @@
     </form>
 </div>
 
+<!-- Mensaje flotante -->
+@if (TempData["Success"] != null)
+{
+    <div id="toastMessage" class="alert alert-success" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+        @TempData["Success"]
+    </div>
+    <script>
+        setTimeout(function () {
+            var toast = document.getElementById('toastMessage');
+            if (toast) {
+                toast.style.transition = "opacity 0.5s ease-out";
+                toast.style.opacity = 0;
+                setTimeout(function () { toast.remove(); }, 500);
+            }
+        }, 3000);
+    </script>
+}
+
 <script>
-    document.getElementById("cancelarBtn").addEventListener("click", function (event) {
-        event.preventDefault();
-            if (confirm("¿Estás seguro de que deseas cancelar? Todos los cambios no guardados se perderán.")) {
-            window.location.href = "@Url.Action("exposicion_admin")";
+    document.addEventListener("DOMContentLoaded", function () {
+        let fechaInicioInput = document.getElementById("fecha_inicio");
+        let fechaCierreInput = document.getElementById("fecha_cierre");
+
+        let hoy = new Date();
+        hoy.setDate(hoy.getDate() + 1);
+        let hoyISO = hoy.toISOString().split("T")[0];
+
+        fechaInicioInput.setAttribute("min", hoyISO);
+        fechaCierreInput.setAttribute("min", hoyISO);
+
+        fechaInicioInput.addEventListener("change", function () {
+            let fechaInicio = new Date(this.value);
+            if (fechaInicio < hoy) {
+                alert("La fecha de inicio debe ser futura.");
+                this.value = "";
+                fechaCierreInput.value = "";
+                fechaCierreInput.setAttribute("min", hoyISO);
+            } else {
+                fechaCierreInput.setAttribute("min", this.value);
             }
         });
+
+        fechaCierreInput.addEventListener("change", function () {
+            let fechaInicioValue = fechaInicioInput.value;
+            if (!fechaInicioValue) {
+                alert("Por favor, selecciona primero una fecha de inicio.");
+                this.value = "";
+                return;
+            }
+            let fechaInicio = new Date(fechaInicioValue);
+            let fechaCierre = new Date(this.value);
+            if (fechaCierre < fechaInicio) {
+                alert("La fecha de cierre debe ser después de la fecha de inicio.");
+                this.value = "";
+            } else if (fechaCierre.getTime() === fechaInicio.getTime()) {
+                if (!confirm("¿Estás seguro de que la fecha de cierre sea la misma que la de inicio?")) {
+                    this.value = "";
+                }
+            }
+        });
+
+        document.getElementById("cancelarBtn").addEventListener("click", function (event) {
+            event.preventDefault();
+            if (confirm("¿Estás seguro de que deseas cancelar? Todos los cambios no guardados se perderán.")) {
+                window.location.href = "@Url.Action("exposicion_admin")";
+            }
+        });
+    });
 </script>

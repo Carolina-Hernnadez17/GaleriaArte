@@ -5,15 +5,18 @@
 }
 
 <head>
+    <link rel="stylesheet" href="~/css/locacionStyle.css" asp-append-version="true" />
     <link rel="stylesheet" href="/css_C/ExpocisionStyle.css" asp-append-version="true" />
 </head>
 
-<div>
+<div class="container-AddLocation">
     <div>
-        <h2>Exposiciones</h2>
+        <div class="section-bienvenida mb-4">
+            <h1 class="display-4 fw-bold text-bienvenida">¡Bienvenido Administrador!</h1>
+            <p class="p-text">Gestión de exposiciones</p>
+        </div>
 
-
-        <form method="get" action="@Url.Action("exposicion_admin_filtrada", "Exposicion")" class="p-4  rounded shadow-sm border">
+        <form method="get" action="@Url.Action("exposicion_admin_filtrada", "Exposicion")" class="p-4 rounded shadow-sm border">
             <h5 class="mb-4">Buscar Exposición</h5>
 
             <div class="row">
@@ -21,8 +24,9 @@
                     <label for="estadoFiltro" class="form-label">Estado</label>
                     <select id="estadoFiltro" name="estadoFiltro" class="form-select">
                         <option value="">-- Seleccionar --</option>
-                        <option value="Activa">Activa</option>
-                        <option value="Finalizada">Finalizada</option>
+                        <option value="programada">programada</option>
+                        <option value="activa">activa</option>
+                        <option value="finalizada">finalizada</option>
                     </select>
                 </div>
 
@@ -44,14 +48,14 @@
             </div>
         </form>
 
-    </div>
+        <hr class="my-5" />
 
+        <div class="text-center mb-5 py-4 rounded shadow-sm">
+            <a href="@Url.Action("Agregar")" class="btn btn-primary btn-lg">Agregar Exposición</a>
+        </div>
 
-    <div>
-        <a href="@Url.Action("Agregar")" class="btn btn-primary  mb-3">Agregar Exposición</a>
-
-        <table class="table table">
-            <thead>
+        <table class="table table-striped table-hover shadow-sm">
+            <thead class="table-dark">
                 <tr>
                     <th>Título</th>
                     <th>Descripción</th>
@@ -69,31 +73,25 @@
                         <td>@exposicion.descripcion</td>
                         <td>@exposicion.fecha_inicio.ToString("dd/MM/yyyy")</td>
                         <td>@exposicion.fecha_cierre.ToString("dd/MM/yyyy")</td>
-                        <td>@(exposicion.estado ? "Activa" : "Finalizada")</td>
+                        <td>@exposicion.estado</td>
                         <td class="btn-container">
-
-                            @if (exposicion.fecha_inicio > DateTime.Now || exposicion.estado == false)
+                            @if (!string.IsNullOrEmpty(exposicion.estado) && exposicion.estado.Trim().ToLower() == "programada")
                             {
-                                <a href="@Url.Action("AgregarObra", "Exposicion", new { exposicionId = exposicion.id_exposicion })" class="btn btn-tabla">Agregar Obra</a>
-
-                            }
-
-                            @if (!exposicion.estado)
-                            {
-                                <form method="post" action="@Url.Action("Eliminar", "Exposicion")"
-                                      style="display:inline;"
+                                <form asp-controller="Exposicion" asp-action="AgregarObra" method="get">
+                                    <input type="hidden" name="exposicionId" value="@exposicion.id_exposicion" />
+                                    <button type="submit" class="btn btn-primary">Agregar Obras</button>
+                                </form>
+                                <a href="@Url.Action("Editar", new { id = exposicion.id_exposicion })" class="btn btn-warning btn-sm me-1">Editar</a>
+                                <form method="post" action="@Url.Action("Eliminar", "Exposicion")" style="display:inline;"
                                       onsubmit="return confirm('¿Estás seguro de eliminar esta exposición?');">
                                     <input type="hidden" name="id" value="@exposicion.id_exposicion" />
-                                    <button type="submit" class="btn btn-tabla1">Eliminar</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                                 </form>
-
                             }
-                            <a href="@Url.Action("Editar", new { id = exposicion.id_exposicion })" class="btn btn-tabla">Editar</a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-
 </div>

@@ -1,5 +1,46 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<GaleriaArte.Models.exposicion>
 @{
+    ViewData["Title"] = "Exposiciones Activas";
+    var exposiciones = ViewBag.ExposicionesActivas as List<GaleriaArte.Models.exposicion>;
+    var obrasPorExpo = ViewBag.ObrasPorExposicion as Dictionary<int, List<GaleriaArte.Models.obra>>;
 }
+
+<div class="container my-4">
+    <h2 class="mb-4">Exposiciones Activas</h2>
+    <div class="row">
+        @if (exposiciones != null)
+        {
+            foreach (var expo in exposiciones)
+            {
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">@expo.titulo_exposicion</h5>
+                            <p class="card-text">@expo.descripcion</p>
+                            <p class="card-text">
+                                <small class="text-muted">Desde: @expo.fecha_inicio.ToString("dd/MM/yyyy")</small><br />
+                                <small class="text-muted">Hasta: @expo.fecha_cierre.ToString("dd/MM/yyyy")</small>
+                            </p>
+                            <hr />
+                            <h6>Obras asignadas:</h6>
+                            @if (obrasPorExpo != null && obrasPorExpo.ContainsKey(expo.id_exposicion) && obrasPorExpo[expo.id_exposicion].Any())
+                            {
+                                <ul>
+                                    @foreach (var obra in obrasPorExpo[expo.id_exposicion])
+                                    {
+                                        <li>@obra.titulo</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p>No hay obras asignadas.</p>
+                            }
+                            <a href="@Url.Action("Detalles", "Exposicion", new { id = expo.id_exposicion })" class="btn btn-primary">Ver Detalles</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

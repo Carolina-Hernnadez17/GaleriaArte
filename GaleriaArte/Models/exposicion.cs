@@ -24,7 +24,7 @@ namespace GaleriaArte.Models
         [Required]
         public DateTime fecha_cierre { get; set; }
 
-        public Boolean estado {  get; set; }
+        public string estado {  get; set; }
 
     }
 }

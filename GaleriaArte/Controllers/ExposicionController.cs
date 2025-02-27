@@ -1,5 +1,6 @@
 ﻿using GaleriaArte.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Net;
@@ -14,6 +15,7 @@ namespace GaleriaArte.Controllers
         public ExposicionController()
         {
             _conexionGaleria = new ConexionGallery();
+            var exposiciones = ObtenerExposicionesPublicadas();
         }
 
         // Endpoint que muestra todas las exposiciones
@@ -40,7 +42,7 @@ namespace GaleriaArte.Controllers
                             descripcion = reader["descripcion"] != DBNull.Value ? reader.GetString("descripcion") : "",
                             fecha_inicio = reader.GetDateTime("fecha_inicio"),
                             fecha_cierre = reader.GetDateTime("fecha_cierre"),
-                            estado = reader.GetBoolean("estado")
+                            estado = reader.GetString("estado")
                         });
                     }
                 }
@@ -84,120 +86,50 @@ namespace GaleriaArte.Controllers
             return RedirectToAction("exposicion_admin");
         }
 
-        // Endpoint de filtrado
-        public IActionResult exposicion_admin_filtrada(string estadoFiltro, DateTime? fechaInicio, DateTime? fechaCierre)
-        {
-
-            List<exposicion> exposiciones = new List<exposicion>();
-
-            using (var conn = _conexionGaleria.AbrirConexion())
-            {
-                if (conn.State != System.Data.ConnectionState.Open) conn.Open();
-
-                string query = "SELECT id_exposicion, id_locacion, titulo_exposicion, descripcion, fecha_inicio, fecha_cierre, estado FROM exposicion WHERE 1=1";
-
-                if (!string.IsNullOrEmpty(estadoFiltro))
-                {
-                    query += " AND estado = @estado";
-                }
-                if (fechaInicio.HasValue)
-                {
-                    query += " AND fecha_inicio >= @fechaInicio";
-                }
-                if (fechaCierre.HasValue)
-                {
-                    query += " AND fecha_cierre <= @fechaCierre";
-                }
-
-                using (var cmd = new MySqlCommand(query, conn))
-                {
-                    if (!string.IsNullOrEmpty(estadoFiltro))
-                    {
-                        bool estado = estadoFiltro == "Activa";
-                        cmd.Parameters.AddWithValue("@estado", estado);
-                    }
-                    if (fechaInicio.HasValue)
-                    {
-                        cmd.Parameters.AddWithValue("@fechaInicio", fechaInicio.Value);
-                    }
-                    if (fechaCierre.HasValue)
-                    {
-                        cmd.Parameters.AddWithValue("@fechaCierre", fechaCierre.Value);
-                    }
-
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            exposiciones.Add(new exposicion
-                            {
-                                id_exposicion = reader.GetInt32("id_exposicion"),
-                                id_locacion = reader.GetInt32("id_locacion"),
-                                titulo_exposicion = reader.GetString("titulo_exposicion"),
-                                descripcion = reader["descripcion"] != DBNull.Value ? reader.GetString("descripcion") : "",
-                                fecha_inicio = reader.GetDateTime("fecha_inicio"),
-                                fecha_cierre = reader.GetDateTime("fecha_cierre"),
-                                estado = reader.GetBoolean("estado")
-                            });
-                        }
-                    }
-                }
-            }
-
-            return View("exposicion_admin", exposiciones);
-
-        }
-
-
-        // EndPoint cargar vista para editar una exposición
+        //EndPoint de editar 
         [HttpGet]
-        public ActionResult Editar(int id)
+        public IActionResult Editar(int id)
         {
-            exposicion exposicion = null;
-            // Usamos la conexión proporcionada por ConexionGallery
-            using (var connection = _conexionGaleria.AbrirConexion())
-            {
-                string query = "SELECT * FROM exposicion WHERE id_exposicion = @id_exposicion";
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@id_exposicion", id);
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            exposicion = new exposicion
-                            {
-                                id_exposicion = reader.GetInt32("id_exposicion"),
-                                titulo_exposicion = reader.GetString("titulo_exposicion"),
-                                descripcion = reader.GetString("descripcion"),
-                                fecha_inicio = reader.GetDateTime("fecha_inicio"),
-                                fecha_cierre = reader.GetDateTime("fecha_cierre"),
-                                id_locacion = reader.GetInt32("id_locacion"),
-                                estado = reader.GetBoolean("estado")
-                            };
-                        }
-                    }
-                }
-            }
-
+            var exposicion = ObtenerExposicionPorId(id);
             if (exposicion == null)
             {
-                return NotFound();
+                TempData["Error"] = "La exposición no existe.";
+                return RedirectToAction("exposicion_admin");
             }
 
-            // Obtener las locaciones para el desplegable
-            List<locacion> locaciones = ObtenerLocaciones();
-            ViewBag.Locaciones = locaciones;
+            // Cargar lista de locaciones
+            ViewBag.Locaciones = new SelectList(ObtenerLocaciones(), "id_Locacion", "ciudad", exposicion.id_locacion);
+
+            // Configurar lista de estados según reglas de negocio
+            bool tieneObras = VerificarObrasAsociadas(id);
+            bool puedeFinalizar = exposicion.fecha_cierre <= DateTime.Now;
+            var estados = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "programada", Text = "Programada", Selected = exposicion.estado.ToLower() == "programada" },
+                new SelectListItem { Value = "activo", Text = "Activo", Disabled = !tieneObras, Selected = exposicion.estado.ToLower() == "activo" },
+                new SelectListItem { Value = "finalizado", Text = "Finalizado", Disabled = !puedeFinalizar, Selected = exposicion.estado.ToLower() == "finalizado" }
+            };
+            ViewBag.Estados = estados;
 
             return View(exposicion);
         }
 
+        // POST: Procesa la edición y actualiza la exposición en la base de datos
         [HttpPost]
         public IActionResult Editar(exposicion exposicion)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Locaciones = ObtenerLocaciones();
+                // Recargar listas en caso de error en el modelo
+                ViewBag.Locaciones = new SelectList(ObtenerLocaciones(), "id_Locacion", "ciudad", exposicion.id_locacion);
+                bool tieneObras = VerificarObrasAsociadas(exposicion.id_exposicion);
+                bool puedeFinalizar = exposicion.fecha_cierre <= DateTime.Now;
+                ViewBag.Estados = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "programada", Text = "Programada", Selected = exposicion.estado.ToLower() == "programada" },
+                    new SelectListItem { Value = "activo", Text = "Activo", Disabled = !tieneObras, Selected = exposicion.estado.ToLower() == "activo" },
+                    new SelectListItem { Value = "finalizado", Text = "Finalizado", Disabled = !puedeFinalizar, Selected = exposicion.estado.ToLower() == "finalizado" }
+                };
                 return View(exposicion);
             }
 
@@ -205,21 +137,58 @@ namespace GaleriaArte.Controllers
             {
                 using (var conn = _conexionGaleria.AbrirConexion())
                 {
-                    if (conn.State != System.Data.ConnectionState.Open)
-                        conn.Open();
-
+                    // Verificar que la exposición exista y no haya iniciado
                     string queryCheck = "SELECT fecha_inicio FROM exposicion WHERE id_exposicion = @id_exposicion";
                     using (var checkCmd = new MySqlCommand(queryCheck, conn))
                     {
                         checkCmd.Parameters.AddWithValue("@id_exposicion", exposicion.id_exposicion);
-                        object fechaInicioObj = checkCmd.ExecuteScalar();
-                        if (fechaInicioObj != null && Convert.ToDateTime(fechaInicioObj) <= DateTime.Now)
+                        object result = checkCmd.ExecuteScalar();
+                        if (result == null)
+                        {
+                            TempData["Error"] = "La exposición no existe.";
+                            return RedirectToAction("exposicion_admin");
+                        }
+                        DateTime fechaInicioActual = Convert.ToDateTime(result);
+                        if (fechaInicioActual <= DateTime.Now)
                         {
                             TempData["Error"] = "No se puede modificar una exposición que ya ha iniciado.";
                             return RedirectToAction("exposicion_admin");
                         }
                     }
 
+                    // Validar que la fecha de cierre sea posterior a la de inicio
+                    if (exposicion.fecha_cierre <= exposicion.fecha_inicio)
+                    {
+                        TempData["Error"] = "La fecha de cierre debe ser posterior a la fecha de inicio.";
+                        ViewBag.Locaciones = new SelectList(ObtenerLocaciones(), "id_Locacion", "ciudad", exposicion.id_locacion);
+                        bool tieneObras = VerificarObrasAsociadas(exposicion.id_exposicion);
+                        bool puedeFinalizar = exposicion.fecha_cierre <= DateTime.Now;
+                        ViewBag.Estados = new List<SelectListItem>
+                        {
+                            new SelectListItem { Value = "programada", Text = "Programada", Selected = exposicion.estado.ToLower() == "programada" },
+                            new SelectListItem { Value = "activo", Text = "Activo", Disabled = !tieneObras, Selected = exposicion.estado.ToLower() == "activo" },
+                            new SelectListItem { Value = "finalizado", Text = "Finalizado", Disabled = !puedeFinalizar, Selected = exposicion.estado.ToLower() == "finalizado" }
+                        };
+                        return View(exposicion);
+                    }
+
+                    // Validar que al cambiar el estado a "activo" existan obras asignadas
+                    if (exposicion.estado.ToLower() == "activo" && !VerificarObrasAsociadas(exposicion.id_exposicion))
+                    {
+                        TempData["Error"] = "No se puede cambiar el estado a 'activo' sin tener obras asignadas.";
+                        ViewBag.Locaciones = new SelectList(ObtenerLocaciones(), "id_Locacion", "ciudad", exposicion.id_locacion);
+                        bool tieneObras = VerificarObrasAsociadas(exposicion.id_exposicion);
+                        bool puedeFinalizar = exposicion.fecha_cierre <= DateTime.Now;
+                        ViewBag.Estados = new List<SelectListItem>
+                        {
+                            new SelectListItem { Value = "programada", Text = "Programada", Selected = exposicion.estado.ToLower() == "programada" },
+                            new SelectListItem { Value = "activo", Text = "Activo", Disabled = !tieneObras, Selected = exposicion.estado.ToLower() == "activo" },
+                            new SelectListItem { Value = "finalizado", Text = "Finalizado", Disabled = !puedeFinalizar, Selected = exposicion.estado.ToLower() == "finalizado" }
+                        };
+                        return View(exposicion);
+                    }
+
+                    // Realizar el UPDATE en la base de datos
                     string queryUpdate = "UPDATE exposicion SET " +
                                          "titulo_exposicion = @titulo_exposicion, " +
                                          "descripcion = @descripcion, " +
@@ -239,9 +208,11 @@ namespace GaleriaArte.Controllers
                         cmd.Parameters.AddWithValue("@id_exposicion", exposicion.id_exposicion);
 
                         int rowsAffected = cmd.ExecuteNonQuery();
-                        System.Diagnostics.Debug.WriteLine("Rows affected: " + rowsAffected);
+                        Console.WriteLine("Rows affected: " + rowsAffected); // Log para depuración
+
                         if (rowsAffected > 0)
                         {
+                            // Registrar la actualización en historial
                             string queryHistorial = "INSERT INTO historial_exposicion (id_exposicion, usuario_modificacion, fecha_modificacion, detalles) " +
                                                     "VALUES (@id_exposicion, @usuario_modificacion, NOW(), @detalles)";
                             using (var histCmd = new MySqlCommand(queryHistorial, conn))
@@ -258,8 +229,8 @@ namespace GaleriaArte.Controllers
                             TempData["Error"] = "No se encontraron cambios para actualizar.";
                         }
                     }
-                    return RedirectToAction("exposicion_admin");
                 }
+                return RedirectToAction("exposicion_admin");
             }
             catch (Exception ex)
             {
@@ -268,10 +239,124 @@ namespace GaleriaArte.Controllers
             }
         }
 
+        // EndPoint que muestra la vista para agregar obras
+        [HttpGet]
+        public IActionResult AgregarObra(int exposicionId)
+        {
+            try
+            {
+                var exposicion = ObtenerExposicionesPorId(exposicionId);
+                // Se compara usando Trim() y ToLower() para asegurarse de que coincida con "programada"
+                if (exposicion == null || exposicion.estado.Trim().ToLower() != "programada")
+                {
+                    ViewBag.Error = "La exposición no existe o no está en estado programada.";
+                    return View("Error");
+                }
 
+                var obrasDisponibles = ObtenerObrasDisponibles();
+                ViewBag.Obras = obrasDisponibles;
 
+                var obrasEnExposicion = ObtenerObrasEnExposicion(exposicionId);
+                ViewBag.ObrasEnExposicion = obrasEnExposicion;
 
-        //EndPoin para eliminar una exposicionaun
+                ViewBag.ExposicionId = exposicionId;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Error al cargar la vista de agregar obra.";
+                Console.WriteLine("Error: " + ex.Message);
+                return View("Error");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult GuardarObra(int exposicionId, int obraId)
+        {
+            try
+            {
+                using (var conexion = new ConexionGallery().AbrirConexion())
+                {
+                    string estadoQuery = "SELECT estado FROM exposicion WHERE id_exposicion = @exposicionId";
+                    using (var estadoCommand = new MySqlCommand(estadoQuery, conexion))
+                    {
+                        estadoCommand.Parameters.AddWithValue("@exposicionId", exposicionId);
+                        string estadoExposicion = estadoCommand.ExecuteScalar()?.ToString();
+                        // Compara robustamente
+                        if (estadoExposicion == null || estadoExposicion.Trim().ToLower() != "programada")
+                        {
+                            ViewBag.Error = "Solo se pueden agregar obras a exposiciones programadas.";
+                            return View("Error");
+                        }
+                    }
+
+                    string checkQuery = "SELECT COUNT(*) FROM exposicion_obra WHERE id_exposicion = @exposicionId AND id_obra = @obraId";
+                    using (var checkCommand = new MySqlCommand(checkQuery, conexion))
+                    {
+                        checkCommand.Parameters.AddWithValue("@exposicionId", exposicionId);
+                        checkCommand.Parameters.AddWithValue("@obraId", obraId);
+                        int count = Convert.ToInt32(checkCommand.ExecuteScalar());
+
+                        if (count > 0)
+                        {
+                            ViewBag.Error = "Esta obra ya se ha agregado a la exposición.";
+                            return View("Error");
+                        }
+                    }
+
+                    string query = "INSERT INTO exposicion_obra (id_exposicion, id_obra) VALUES (@exposicionId, @obraId)";
+                    using (var command = new MySqlCommand(query, conexion))
+                    {
+                        command.Parameters.AddWithValue("@exposicionId", exposicionId);
+                        command.Parameters.AddWithValue("@obraId", obraId);
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                return RedirectToAction("AgregarObra", new { exposicionId });
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Error al agregar la obra a la exposición.";
+                Console.WriteLine("Error: " + ex.Message);
+                return View("Error");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EliminarObraDeExposicion(int exposicionId, int obraId)
+        {
+            try
+            {
+                using (var conn = _conexionGaleria.AbrirConexion())
+                {
+                    string query = "DELETE FROM exposicion_obra WHERE id_exposicion = @exposicionId AND id_obra = @obraId";
+                    using (var cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@exposicionId", exposicionId);
+                        cmd.Parameters.AddWithValue("@obraId", obraId);
+                        int filasAfectadas = cmd.ExecuteNonQuery();
+
+                        if (filasAfectadas > 0)
+                        {
+                            TempData["MensajeExito"] = "Obra eliminada de la exposición exitosamente.";
+                        }
+                        else
+                        {
+                            TempData["MensajeError"] = "No se encontró la obra en la exposición.";
+                        }
+                    }
+                }
+                return RedirectToAction("AgregarObra", new { exposicionId = exposicionId });
+            }
+            catch (Exception ex)
+            {
+                TempData["MensajeError"] = "Error al eliminar la obra de la exposición: " + ex.Message;
+                return RedirectToAction("AgregarObra", new { exposicionId = exposicionId });
+            }
+        }
+
+        //EndPoin para eliminar una exposicion
         [HttpPost]
         public IActionResult Eliminar(int id)
         {
@@ -326,110 +411,225 @@ namespace GaleriaArte.Controllers
         }
 
 
-        // EndPoint que muestra la vista para agregar obras
-        [HttpGet]
-        public IActionResult AgregarObra(int exposicionId)
+        // Endpoint de filtrado
+        public IActionResult exposicion_admin_filtrada(string estadoFiltro, DateTime? fechaInicio, DateTime? fechaCierre)
         {
-            try
+
+            List<exposicion> exposiciones = new List<exposicion>();
+
+            using (var conn = _conexionGaleria.AbrirConexion())
             {
-                var exposicion = ObtenerExposicionesPorId(exposicionId);
-                if (exposicion == null || exposicion.estado == false)
+                if (conn.State != System.Data.ConnectionState.Open) conn.Open();
+
+                string query = "SELECT id_exposicion, id_locacion, titulo_exposicion, descripcion, fecha_inicio, fecha_cierre, estado FROM exposicion WHERE 1=1";
+
+                if (!string.IsNullOrEmpty(estadoFiltro))
                 {
-                    ViewBag.Error = "La exposición no existe o no está activa.";
-                    return View("Error");
+                    query += " AND estado = @estado";
+                }
+                if (fechaInicio.HasValue)
+                {
+                    query += " AND fecha_inicio >= @fechaInicio";
+                }
+                if (fechaCierre.HasValue)
+                {
+                    query += " AND fecha_cierre <= @fechaCierre";
                 }
 
-                var obrasDisponibles = ObtenerObrasDisponibles();
-                ViewBag.Obras = obrasDisponibles;
-
-                var obrasEnExposicion = ObtenerObrasEnExposicion(exposicionId);
-                ViewBag.ObrasEnExposicion = obrasEnExposicion;
-
-                ViewBag.ExposicionId = exposicionId;
-                return View();
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Error = "Error al cargar la vista de agregar obra.";
-                Console.WriteLine("Error: " + ex.Message);
-                return View("Error");
-            }
-        }
-
-        [HttpPost]
-        public IActionResult GuardarObra(int exposicionId, int obraId)
-        {
-            try
-            {
-                using (var conexion = new ConexionGallery().AbrirConexion())
+                using (var cmd = new MySqlCommand(query, conn))
                 {
-                    string checkQuery = "SELECT COUNT(*) FROM exposicion_obra WHERE id_exposicion = @exposicionId AND id_obra = @obraId";
-                    using (var checkCommand = new MySqlCommand(checkQuery, conexion))
+                    if (!string.IsNullOrEmpty(estadoFiltro))
                     {
-                        checkCommand.Parameters.AddWithValue("@exposicionId", exposicionId);
-                        checkCommand.Parameters.AddWithValue("@obraId", obraId);
-                        int count = Convert.ToInt32(checkCommand.ExecuteScalar());
-                        if (count > 0)
+                        bool estado = estadoFiltro == "Activa";
+                        cmd.Parameters.AddWithValue("@estado", estado);
+                    }
+                    if (fechaInicio.HasValue)
+                    {
+                        cmd.Parameters.AddWithValue("@fechaInicio", fechaInicio.Value);
+                    }
+                    if (fechaCierre.HasValue)
+                    {
+                        cmd.Parameters.AddWithValue("@fechaCierre", fechaCierre.Value);
+                    }
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
                         {
-                            ViewBag.Error = "Esta obra ya se ha agregado.";
-                            return View("Error");
+                            exposiciones.Add(new exposicion
+                            {
+                                id_exposicion = reader.GetInt32("id_exposicion"),
+                                id_locacion = reader.GetInt32("id_locacion"),
+                                titulo_exposicion = reader.GetString("titulo_exposicion"),
+                                descripcion = reader["descripcion"] != DBNull.Value ? reader.GetString("descripcion") : "",
+                                fecha_inicio = reader.GetDateTime("fecha_inicio"),
+                                fecha_cierre = reader.GetDateTime("fecha_cierre"),
+                                estado = reader.GetString("estado")
+                            });
                         }
                     }
-
-                    string query = "INSERT INTO exposicion_obra (id_exposicion, id_obra) VALUES (@exposicionId, @obraId)";
-                    using (var command = new MySqlCommand(query, conexion))
-                    {
-                        command.Parameters.AddWithValue("@exposicionId", exposicionId);
-                        command.Parameters.AddWithValue("@obraId", obraId);
-                        command.ExecuteNonQuery();
-                    }
                 }
+            }
 
-                return RedirectToAction("AgregarObra", new { exposicionId });
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Error = "Error al agregar la obra a la exposición.";
-                Console.WriteLine("Error: " + ex.Message);
-                return View("Error");
-            }
+            return View("exposicion_admin", exposiciones);
+
         }
 
-        [HttpPost]
-        public IActionResult EliminarObraDeExposicion(int exposicionId, int obraId)
+
+        //EndPoints para usuarios
+        [HttpGet]
+        public IActionResult ExposicionUser()
         {
+            List<exposicion> exposicionesActivas = new List<exposicion>();
+
             try
             {
                 using (var conn = _conexionGaleria.AbrirConexion())
                 {
-                    string query = "DELETE FROM exposicion_obra WHERE id_exposicion = @exposicionId AND id_obra = @obraId";
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    string query = "SELECT id_exposicion, id_locacion, titulo_exposicion, descripcion, fecha_inicio, fecha_cierre, estado FROM exposicion WHERE estado = 'activo'";
+                    using (var cmd = new MySqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@exposicionId", exposicionId);
-                        cmd.Parameters.AddWithValue("@obraId", obraId);
-                        int filasAfectadas = cmd.ExecuteNonQuery();
-
-                        if (filasAfectadas > 0)
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            TempData["MensajeExito"] = "Obra eliminada de la exposición exitosamente.";
-                        }
-                        else
-                        {
-                            TempData["MensajeError"] = "No se pudo eliminar la obra de la exposición.";
+                            while (reader.Read())
+                            {
+                                exposicionesActivas.Add(new exposicion
+                                {
+                                    id_exposicion = reader.GetInt32("id_exposicion"),
+                                    id_locacion = reader.GetInt32("id_locacion"),
+                                    titulo_exposicion = reader.GetString("titulo_exposicion"),
+                                    descripcion = reader.IsDBNull(reader.GetOrdinal("descripcion")) ? "" : reader.GetString("descripcion"),
+                                    fecha_inicio = reader.GetDateTime("fecha_inicio"),
+                                    fecha_cierre = reader.GetDateTime("fecha_cierre"),
+                                    estado = reader.GetString("estado")
+                                });
+                            }
                         }
                     }
                 }
-                return RedirectToAction("AgregarObra", new { exposicionId = exposicionId });
+
+                Dictionary<int, List<obra>> obrasPorExposicion = new Dictionary<int, List<obra>>();
+                foreach (var expo in exposicionesActivas)
+                {
+                    obrasPorExposicion[expo.id_exposicion] = ObtenerObrasEnExposicion(expo.id_exposicion);
+                }
+
+                ViewBag.ExposicionesActivas = exposicionesActivas;
+                ViewBag.ObrasPorExposicion = obrasPorExposicion;
             }
             catch (Exception ex)
             {
-                return RedirectToAction("Index", "Error", new { mensaje = "Error al eliminar la obra de la exposición: " + ex.Message });
+                TempData["Error"] = "Error al obtener las exposiciones: " + ex.Message;
             }
+
+            return View();
         }
 
 
 
         // Métodos auxiliares
+        private bool VerificarObrasAsociadas(int id_exposicion)
+        {
+            try
+            {
+                using (var conn = _conexionGaleria.AbrirConexion())
+                {
+                    if (conn.State != System.Data.ConnectionState.Open)
+                        conn.Open();
+
+                    string query = "SELECT COUNT(*) FROM exposicion_obra WHERE id_exposicion = @id_exposicion";
+                    using (var cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@id_exposicion", id_exposicion);
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+                        return count > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al verificar obras: " + ex.Message);
+                return false;
+            }
+        }
+
+        private exposicion ObtenerExposicionPorId(int id)
+        {
+            exposicion expo = null;
+            using (var conexion = _conexionGaleria.AbrirConexion())
+            {
+                string query = "SELECT * FROM exposicion WHERE id_exposicion = @id";
+                using (var cmd = new MySqlCommand(query, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            expo = new exposicion
+                            {
+                                id_exposicion = reader.GetInt32("id_exposicion"),
+                                titulo_exposicion = reader.GetString("titulo_exposicion"),
+                                descripcion = reader.IsDBNull(reader.GetOrdinal("descripcion")) ? "" : reader.GetString("descripcion"),
+                                fecha_inicio = reader.GetDateTime("fecha_inicio"),
+                                fecha_cierre = reader.GetDateTime("fecha_cierre"),
+                                id_locacion = reader.GetInt32("id_locacion"),
+                                estado = reader.GetString("estado")
+                            };
+                        }
+                    }
+                }
+            }
+            return expo;
+        }
+
+
+        private void ActualizarExposicion(exposicion expo)
+        {
+            using (var conexion = new ConexionGallery().AbrirConexion())
+            {
+                string query = "UPDATE exposicion SET estado = @estado WHERE id_exposicion = @idExposicion";
+                using (var cmd = new MySqlCommand(query, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@estado", expo.estado);
+                    cmd.Parameters.AddWithValue("@idExposicion", expo.id_exposicion);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private List<exposicion> ObtenerExposicionesPublicadas()
+        {
+            List<exposicion> exposiciones = new List<exposicion>();
+            using (var conexion = new ConexionGallery().AbrirConexion())
+            {
+                string query = @"SELECT id_exposicion, titulo_exposicion, descripcion, fecha_inicio, fecha_cierre, estado 
+                                 FROM exposicion 
+                                 WHERE estado = 1
+                                 ORDER BY fecha_inicio";
+                using (var cmd = new MySqlCommand(query, conexion))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            exposiciones.Add(new exposicion
+                            {
+                                id_exposicion = reader.GetInt32("id_exposicion"),
+                                titulo_exposicion = reader.GetString("titulo_exposicion"),
+                                descripcion = reader.IsDBNull(reader.GetOrdinal("descripcion")) ? null : reader.GetString("descripcion"),
+                                fecha_inicio = reader.GetDateTime("fecha_inicio"),
+                                fecha_cierre = reader.GetDateTime("fecha_cierre"),
+                                estado = reader.GetString("estado")
+                            });
+                        }
+                    }
+                }
+            }
+            return exposiciones;
+        }
+
+
         public List<locacion> ObtenerLocaciones()
         {
             List<locacion> locaciones = new List<locacion>();
@@ -467,7 +667,7 @@ namespace GaleriaArte.Controllers
             }
 
             return locaciones;
-            
+
         }
 
         private exposicion ObtenerExposicionesPorId(int exposicionId)
@@ -486,7 +686,7 @@ namespace GaleriaArte.Controllers
                             {
                                 id_exposicion = reader.GetInt32("id_exposicion"),
                                 titulo_exposicion = reader.GetString("titulo_exposicion"),
-                                estado = reader.GetBoolean("estado")
+                                estado = reader.GetString("estado")
                             };
                         }
                     }

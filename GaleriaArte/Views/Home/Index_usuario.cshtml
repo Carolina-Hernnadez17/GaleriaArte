@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<obra>
+
+@{
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
 
@@ -15,12 +17,6 @@
     <link rel="stylesheet" href="~/Content/Site.css" />
 
     <style>
-
-        body {
-            background-color: #111;  
-            color: #fff;            
-            font-family: Arial, sans-serif;
-        }
 
         .hero-section {
             padding: 4rem 2rem;
@@ -118,74 +114,161 @@
         .newsletter-section .form-check-label {
             color: #ccc;
         }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .listado-obras {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .categorias {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .categoria-pill {
+            background-color: #e3f2fd;
+            border: 1px solid #90caf9;
+            color: #1565c0;
+            border-radius: 50px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .categoria-pill:hover {
+                background-color: #bbdefb;
+                color: #0d47a1;
+            }
+
+        .buscador {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+            .buscador input {
+                width: 50%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 25px;
+                outline: none;
+                transition: box-shadow 0.3s ease;
+            }
+
+                .buscador input:focus {
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .card:hover {
+                transform: scale(1.05);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            }
+
+        .card-img-top {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .card-body {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .estado-disponible {
+            color: green;
+            font-weight: bold;
+        }
+
+        .estado-no-disponible {
+            color: red;
+            font-weight: bold;
+        }
+
+        .disabled-card {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
     </style>
 </head>
 <body>
 
-    <section class="hero-section container-fluid">
-        <div class="row align-items-center">
-            <div class="col-md-5 text-center text-md-start mb-4 mb-md-0">
-                <img src="https://via.placeholder.com/400x500.png?text=Renaissance+Portrait"
-                     alt="Renaissance Portrait"
-                     class="img-fluid rounded" />
-            </div>
-            <div class="col-md-7">
-                <h1 class="hero-title">Renaissance Portrait Masters</h1>
-                <p class="hero-date">June 21 / August 8 2025</p>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Suspendisse consequat tortor sit amet elit finibus, non pretium odio commodo.
-                    Donec fermentum neque at orci iaculis, vitae maximus nulla placerat.
-                </p>
-                <button class="btn-presale">Presale Ticket</button>
-            </div>
-        </div>
-    </section>
+    <!-- Sección Principal -->
+    <div class="container-fluid bg-black text-white py-5 position-relative">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 position-relative">
+                    <div class="position-relative">
+                        <a >
+                            <img src="https://i.ibb.co/7tNxT0Ms/6ad302131a8fd46d56e471fae7f79921.jpg" 
+                            alt="6ad302131a8fd46d56e471fae7f79921" border="0" class="img-fluid rounded shadow-lg" style="width: 50%">
+                        </a>
+                        <a>
+                            <img src="https://i.ibb.co/KchmxgLk/6418e6b0164f9cb61d4ba8a5b9bce947.jpg" 
+                            class="superpuesta img-fluid rounded shadow position-absolute top-50 start-50 translate-middle"
+                            style="width: 50%; border: 5px solid white;" alt="Segunda Imagen" border="0">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h1 class="display-4 fw-bold">¡Bienvenido !</h1>
+                    <p class="text-success"> Galería de Arte</p>
+                    <p>En esta galeria tendras varias opciones como usuario, puedes: publicar tus obras y ofertar por obras de 
+                        otrsos usuarios y ver donde seran las nuevas exposiciones de arte.</p>
+                    <button class="btn btn-outline-success" onclick="location.href='#panel-administrador'">Ir a ver obras</button>
 
-    <section class="events-section container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Nuestros Eventos</h2>
-            <a href="#" class="text-decoration-none text-white-50">Ver más &raquo;</a>
-        </div>
+                </div>
 
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card event-card">
-                    <img src="https://via.placeholder.com/600x400.png?text=Evento+1"
-                         class="card-img-top"
-                         alt="Evento 1">
-                    <div class="card-body">
-                        <h5 class="card-title">The History of Classic Art</h5>
-                        <p class="event-date">01 Mar, 2024</p>
-                        <p class="event-views">653 vistas</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card event-card">
-                    <img src="https://via.placeholder.com/600x400.png?text=Evento+2"
-                         class="card-img-top"
-                         alt="Evento 2">
-                    <div class="card-body">
-                        <h5 class="card-title">South Asian Modern Art</h5>
-                        <p class="event-date">12 Abr, 2024</p>
-                        <p class="event-views">845 vistas</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card event-card">
-                    <img src="https://via.placeholder.com/600x400.png?text=Evento+3"
-                         class="card-img-top"
-                         alt="Evento 3">
-                    <div class="card-body">
-                        <h5 class="card-title">Refraction on Colour and Form</h5>
-                        <p class="event-date">28 May, 2024</p>
-                        <p class="event-views">920 vistas</p>
-                    </div>
-                </div>
             </div>
         </div>
+    </div>
+
+    <section id="panel-administrador" class="events-section container">
+        
+            
     </section>
 
     <section class="newsletter-section">

@@ -6,11 +6,9 @@
 <head>
     <link rel="stylesheet" href="~/css/locacionStyle.css" asp-append-version="true" />
     <link rel="stylesheet" href="/css_C/ExpocisionStyle.css" asp-append-version="true" />
-
 </head>
 
 <div class="container-AddLocation">
-
     <div class="section-bienvenida">
         <h1 class="display-4 fw-bold text-bienvenida">¡Bienvenido Administrador!</h1>
         <p class="p-text">Agregar Obras a la Exposición</p>
@@ -29,9 +27,9 @@
         <div class="Agregar-section">
             <input type="hidden" name="exposicionId" value="@ViewBag.ExposicionId" />
 
-            <div class="form-floating mb-5">
-                <label for="obraId" class="form-label"></label>
-                <select class="form-control text-light" id="obraId" name="obraId">
+            <div class="form-floating">
+                <select class="form-control text-light" id="obraId" name="obraId" aria-label="Seleccionar una obra">
+                    <option value="">-- Seleccionar --</option>
                     @foreach (var obra in ViewBag.Obras)
                     {
                         <option value="@obra.id_obra">@obra.titulo</option>
@@ -41,7 +39,6 @@
 
             <button type="submit" class="btn-add btn-primary text-light" id="submitButton">Agregar Obra</button>
         </div>
-
     </form>
 
     <div class="section-division">
@@ -61,11 +58,11 @@
                     {
                         <tr>
                             <td>@obra.titulo</td>
-                            <td class="section-button">
-                                <form asp-action="EliminarObraDeExposicion" asp-controller="Obra" method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta obra de la exposición?');">
+                            <td>
+                                <form asp-action="EliminarObraDeExposicion" method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta obra de la exposición?');">
                                     <input type="hidden" name="obraId" value="@obra.id_obra" />
                                     <input type="hidden" name="exposicionId" value="@ViewBag.ExposicionId" />
-                                    <button type="submit" class="btn-tabla btn-outline-dark btn-sm">Eliminar</button>
+                                    <button type="submit" class="btn btn-danger">Eliminar</button>
                                 </form>
                             </td>
                         </tr>
@@ -78,5 +75,5 @@
             <p>No hay obras agregadas a esta exposición.</p>
         }
     </div>
-
 </div>
+
