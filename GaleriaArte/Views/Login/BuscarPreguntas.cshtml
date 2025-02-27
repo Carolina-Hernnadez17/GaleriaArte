@@ -6,14 +6,11 @@
 
 <h2>Responde tus preguntas de seguridad</h2>
 
-@if (!string.IsNullOrEmpty(ViewBag.Mensaje))
+@if (!string.IsNullOrEmpty(ViewBag.Msm))
 {
-    <div class="alert alert-danger">@ViewBag.Mensaje</div>
+    <div class="alert alert-danger">@ViewBag.Msm</div>
 }
-@if (ViewBag.Error != null)
-{
-    <div class="alert alert-danger">@ViewBag.Error</div>
-}
+
 
 <form asp-controller="Login" asp-action="ValidarRespuestas" method="post">
     <input type="hidden" asp-for="UserId" />
