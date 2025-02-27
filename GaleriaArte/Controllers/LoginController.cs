@@ -333,7 +333,6 @@ namespace GaleriaArte.Controllers
             try
             {
                 string query = "SELECT question, answer FROM PreguntasSeguridad WHERE user_id = @UserId LIMIT 2";
-
                 Dictionary<string, string> respuestasBD = new Dictionary<string, string>();
 
                 using (var conn = _conexion.AbrirConexion())
@@ -342,21 +341,13 @@ namespace GaleriaArte.Controllers
                     cmd.Parameters.AddWithValue("@UserId", model.UserId);
                     MySqlDataReader reader = cmd.ExecuteReader();
 
-                    int index = 0;
                     while (reader.Read())
                     {
-                        if (index == 0)
-                        {
-                            respuestasBD[reader["question"].ToString()] = reader["answer"].ToString().Trim().ToLower();
-                        }
-                        else if (index == 1)
-                        {
-                            respuestasBD[reader["question"].ToString()] = reader["answer"].ToString().Trim().ToLower();
-                        }
-                        index++;
+                        respuestasBD[reader["question"].ToString()] = reader["answer"].ToString().Trim().ToLower();
                     }
                 }
 
+                // Verificar si las respuestas son correctas
                 bool respuesta1Correcta = respuestasBD.ContainsKey(model.Question1) &&
                                           respuestasBD[model.Question1] == model.Answer1.Trim().ToLower();
 
@@ -366,8 +357,9 @@ namespace GaleriaArte.Controllers
                 if (!respuesta1Correcta || !respuesta2Correcta)
                 {
                     ViewBag.Msm = "Las respuestas no coinciden. Inténtalo de nuevo.";
-                    return RedirectToAction("BuscarPreguntas", new { userId = model.UserId });
-
+                    model.Question1 = model.Question1; // Mantener las preguntas en la vista
+                    model.Question2 = model.Question2;
+                    return View("BuscarPreguntas", model);
                 }
 
                 return RedirectToAction("NuevaContrasena", new { userId = model.UserId });
@@ -378,6 +370,7 @@ namespace GaleriaArte.Controllers
                 return RedirectToAction("BuscarPreguntas", new { userId = model.UserId });
             }
         }
+
 
 
 
