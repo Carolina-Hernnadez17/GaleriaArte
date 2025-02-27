@@ -17,7 +17,7 @@ namespace GaleriaArte.Controllers
         {
             return View();
         }
-        
+
 
         public ActionResult Index()
         {
@@ -26,10 +26,18 @@ namespace GaleriaArte.Controllers
             return View();
         }
 
+        public ActionResult Privacy() 
+        {
+            return View();
+        }
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
     }
 }

@@ -1,4 +1,6 @@
-﻿@model List<GaleriaArte.Models.exposicion>
+﻿
+@model List<GaleriaArte.Models.exposicion>
+
 
 @{
     ViewData["Title"] = "Exposiciones";
@@ -79,13 +81,13 @@
                             {
                                 <form asp-controller="Exposicion" asp-action="AgregarObra" method="get">
                                     <input type="hidden" name="exposicionId" value="@exposicion.id_exposicion" />
-                                    <button type="submit" class="btn btn-primary">Agregar Obras</button>
+                                    <button type="submit" class="btn btn-tabla">Agregar</button>
                                 </form>
-                                <a href="@Url.Action("Editar", new { id = exposicion.id_exposicion })" class="btn btn-warning btn-sm me-1">Editar</a>
+                                <a href="@Url.Action("Editar", new { id = exposicion.id_exposicion })" class="btn btn-tabla1 btn-sm me-1">Editar</a>
                                 <form method="post" action="@Url.Action("Eliminar", "Exposicion")" style="display:inline;"
                                       onsubmit="return confirm('¿Estás seguro de eliminar esta exposición?');">
                                     <input type="hidden" name="id" value="@exposicion.id_exposicion" />
-                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                    <button type="submit" class="btn btn-tabla btn-sm">Eliminar</button>
                                 </form>
                             }
                         </td>

@@ -1,6 +1,168 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<head>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/locacionStyle.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <link href="~/css_E/ObraVista.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Charm&family=Playball&display=swap" rel="stylesheet">
+</head>
+
+<style> 
+    
+
+    /* Estilo para las cards */
+    .card {
+        background-color: #1c1c1c;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .card-body p {
+        font-size: 1rem;
+        color: white;
+    }
+
+    .card-body a {
+        color: #e6a700;
+        text-decoration: none;
+    }
+
+    .card-body a:hover {
+        text-decoration: underline;
+    }
+
+    /* Estilo para las imágenes */
+    .carousel-image {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .carousel-image:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .artwork-img {
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .img-fluid {
+        max-height: 300px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    /* Sección de Obras de Arte */
+    .container-fluid.bg-dark {
+        background-color: #111 !important;
+    }
+
+    .fw-bold {
+        font-weight: 700 !important;
+    }
+
+    .text-white {
+        color: #fff !important;
+    }
+
+    /* Sección de Galerias Afiliadas */
+    .artwork-img {
+        border-radius: 8px;
+        transition: transform 0.4s ease, box-shadow 0.3s ease;
+    }
+
+    .artwork-img:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .carousel-image {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .carousel-image:hover {
+        transform: scale(1.08);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+</style>
+
+<div class="section-inicio">
+		<h2 class="texto-ver-obra ">Contactanos </h2>
+        
+</div>
+<!-- Sección de bienvenida -->
+<div class="section-bienvenida text-center py-5">
+    <p class="p-text">Estamos aquí para brindarte toda la información que necesitas.</p>
+</div>
+
+<!-- Información de contacto -->
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 mb-4">
+            <div class="card bg-dark text-white border-0 shadow-lg rounded">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">Galería de Arte - Información de Contacto</h3>
+                    <p><strong>Dirección:</strong> Calle Ficticia 123, Ciudad de Arte, País</p>
+                    <p><strong>Teléfono:</strong> +1 (555) 123-4567</p>
+                    <p><strong>Correo Electrónico:</strong> <a href="mailto:contacto@galeriaarte.com" class="text-white">contacto@galeriaarte.com</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensaje adicional -->
+    <div class="row mt-5">
+        <div class="col-md-6 offset-md-3 mb-4">
+            <div class="card bg-dark text-white border-0 shadow-lg rounded">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-4">¡Estamos aquí para ayudarte!</h4>
+                    <p>Si tienes alguna pregunta o deseas obtener más información sobre nuestras exposiciones y obras de arte, no dudes en ponerte en contacto con nosotros. Estaremos encantados de ayudarte.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección de Obras de Arte -->
+<div class="container-fluid bg-dark text-white py-5">
+    <div class="container text-center">
+        <h3 class="fw-bold mb-4">Galerías Afiliadas</h3>
+        <div class="row justify-content-center">
+            <div class="col-md-3 mb-4">
+                <a href="https://ibb.co/q3D8Q668"><img src="https://i.ibb.co/21Fr4JJr/250047d60d57db1e4b3500e89b61e29c.jpg" 
+                         alt="Obra de Arte 1" class="carousel-image artwork-img img-fluid rounded shadow-sm">
+                </a>
+            </div>
+            <div class="col-md-3 mb-4">
+                <a href="https://ibb.co/JFjCSQ2W"><img src="https://i.ibb.co/3YmkPzW5/0c823317ed769acaa279fa72792b7a64.jpg" 
+                         alt="Obra de Arte 2" class="carousel-image artwork-img img-fluid rounded shadow-sm">
+                </a>
+            </div>
+            <div class="col-md-3 mb-4">
+                <a href="https://ibb.co/WRhs951"><img src="https://i.ibb.co/dHT79My/6d877a2a6caa4cf9046553cdadea06ee.jpg" 
+                         alt="Obra de Arte 3" class="carousel-image artwork-img img-fluid rounded shadow-sm">
+                </a>
+            </div>
+            <div class="col-md-3 mb-4">
+                <a href="https://ibb.co/84TGdfMn"><img src="https://i.ibb.co/M5WKGtny/8fba9022a41d2184f190a27482c56990.jpg" 
+                         alt="Obra de Arte 4" class="carousel-image artwork-img img-fluid rounded shadow-sm">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

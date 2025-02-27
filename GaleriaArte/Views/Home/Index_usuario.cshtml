@@ -1,11 +1,28 @@
 ﻿
+
 @{
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
 
-<h1>Bienvenido a la sección de Usuario</h1>
-<p>Contenido de la página principal de usuario...</p>
+<head> 
+    
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
 
+<style>
+    /* Sección de Obras de Arte */
+    .container-fluid.bg-dark {
+        background-color: #111 !important;
+    }
+
+    .fw-bold {
+        font-weight: 700 !important;
+    }
+
+    .text-white {
+        color: #fff !important;
+    }
+</style>
 
 <!-- Sección Principal -->
 <div class="container-fluid bg-black text-white py-5 position-relative">
@@ -13,11 +30,11 @@
         <div class="row align-items-center">
             <div class="col-md-6 position-relative">
                 <div class="position-relative">
-                    <a>
-                        <img src="https://i.ibb.co/7tNxT0Ms/6ad302131a8fd46d56e471fae7f79921.jpg"
-                             alt="6ad302131a8fd46d56e471fae7f79921" border="0" class="img-fluid rounded shadow-lg" style="width: 50%">
+                    <a href="https://ibb.co/7JmpgjL8">
+                        <img src="https://i.ibb.co/Lz7gQYHb/f45bd3fbd2ed3ae3ae0278ccfec32af6.jpg" 
+                         alt="Renaissance Art" border="0" class="img-fluid rounded shadow-lg" style="width: 50%">
                     </a>
-                    <a>
+                    <a href="https://ibb.co/j9fHkYW2">
                         <img src="https://i.ibb.co/KchmxgLk/6418e6b0164f9cb61d4ba8a5b9bce947.jpg"
                              class="superpuesta img-fluid rounded shadow position-absolute top-50 start-50 translate-middle"
                              style="width: 50%; border: 5px solid white;" alt="Segunda Imagen" border="0">
@@ -39,28 +56,31 @@
     </div>
 </div>
 
-<section id="panel-administrador" class="events-section container">
-</section>
+<!-- Sección de Imágenes -->
+<div id="panel-administrador" class="container-fluid  bg-black text-white py-5">
+    <div class="container text-center">
+        <h3 class="fw-bold">Obras de Arte</h3>
 
-<section class="newsletter-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <h3>Newsletter Sign Up</h3>
-                <p>Enter your email address</p>
-                <form>
-                    <div class="mb-3">
-                        <input type="email" class="form-control" placeholder="you@example.com" />
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="termsCheck">
-                        <label class="form-check-label" for="termsCheck">
-                            Acepto los términos y condiciones
-                        </label>
-                    </div>
-                    <button type="submit" class="btn btn-newsletter">Suscribirse</button>
-                </form>
-            </div>
+        <div class="d-flex justify-content-center">
+            <a href="https://ibb.co/7TB1Tfs">
+                <img src="https://i.ibb.co/ZwvMwjq/7266f8028f51a65c9726d25a8a40c8af.jpg" 
+                alt="Obra de Arte 1" class="carousel-image artwork-img">
+            </a>
+            <a href="https://ibb.co/60Jcpq9j">
+                <img src="https://i.ibb.co/7tNxT0Ms/6ad302131a8fd46d56e471fae7f79921.jpg"
+                alt="Obra de Arte 2" class="carousel-image artwork-img">
+            </a>
+            <a href="https://ibb.co/4g5HFkWW">
+                <img src="https://i.ibb.co/DgSZ1d44/e738b39adbfc5c2985350dad6fc49c65.jpg"
+                alt="Obra de Arte 3" class="carousel-image artwork-img">
+            </a>
+            <a href="https://ibb.co/DHwfSKzH">
+                <img src="https://i.ibb.co/pB4j9XbB/7890b2d6b7548883b634c66900fc152c.jpg"
+                alt="Obra de Arte 4" class="carousel-image artwork-img">
+            </a>
         </div>
     </div>
-</section>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>

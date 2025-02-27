@@ -27,6 +27,26 @@ namespace GaleriaArte.Controllers
             {
                 if (conn.State != System.Data.ConnectionState.Open) conn.Open();
 
+                // Obtener la fecha actual
+                DateTime fechaActual = DateTime.Now;
+
+                // Actualizar estados de exposiciones antes de mostrarlas
+                string updateQuery = @"
+                    UPDATE exposicion 
+                    SET estado = 
+                        CASE 
+                            WHEN fecha_inicio <= @fechaActual AND fecha_cierre >= @fechaActual THEN 'activo'
+                            WHEN fecha_cierre < @fechaActual THEN 'finalizada'
+                            ELSE estado
+                        END";
+
+                using (var updateCmd = new MySqlCommand(updateQuery, conn))
+                {
+                    updateCmd.Parameters.AddWithValue("@fechaActual", fechaActual);
+                    updateCmd.ExecuteNonQuery();
+                }
+
+                // Consultar las exposiciones actualizadas
                 string query = "SELECT id_exposicion, id_locacion, titulo_exposicion, descripcion, fecha_inicio, fecha_cierre, estado FROM exposicion";
 
                 using (var cmd = new MySqlCommand(query, conn))
@@ -67,6 +87,7 @@ namespace GaleriaArte.Controllers
             {
                 if (conn.State != System.Data.ConnectionState.Open) conn.Open();
 
+
                 string query = @"INSERT INTO exposicion (id_locacion, titulo_exposicion, descripcion, fecha_inicio, fecha_cierre, estado)
                          VALUES (@id_locacion, @titulo_exposicion, @descripcion, @fecha_inicio, @fecha_cierre, @estado)";
 
@@ -81,6 +102,8 @@ namespace GaleriaArte.Controllers
 
                     cmd.ExecuteNonQuery();
                 }
+
+                
             }
 
             return RedirectToAction("exposicion_admin");
@@ -187,6 +210,7 @@ namespace GaleriaArte.Controllers
                         };
                         return View(exposicion);
                     }
+                    string usuarioModificacion = User.Identity.IsAuthenticated ? User.Identity.Name : "Administardor";
 
                     // Realizar el UPDATE en la base de datos
                     string queryUpdate = "UPDATE exposicion SET " +
@@ -213,15 +237,18 @@ namespace GaleriaArte.Controllers
                         if (rowsAffected > 0)
                         {
                             // Registrar la actualización en historial
-                            string queryHistorial = "INSERT INTO historial_exposicion (id_exposicion, usuario_modificacion, fecha_modificacion, detalles) " +
-                                                    "VALUES (@id_exposicion, @usuario_modificacion, NOW(), @detalles)";
+                            string queryHistorial = @"
+                            INSERT INTO historial_exposicion (id_exposicion, usuario_modificacion, fecha_modificacion, detalles) 
+                            VALUES (@id_exposicion, @usuario_modificacion, NOW(), @detalles)";
+
                             using (var histCmd = new MySqlCommand(queryHistorial, conn))
                             {
                                 histCmd.Parameters.AddWithValue("@id_exposicion", exposicion.id_exposicion);
-                                histCmd.Parameters.AddWithValue("@usuario_modificacion", "admin");
+                                histCmd.Parameters.AddWithValue("@usuario_modificacion", usuarioModificacion);
                                 histCmd.Parameters.AddWithValue("@detalles", "Se modificó la exposición");
                                 histCmd.ExecuteNonQuery();
                             }
+
                             TempData["Success"] = "Exposición actualizada correctamente.";
                         }
                         else
@@ -323,6 +350,74 @@ namespace GaleriaArte.Controllers
             }
         }
 
+        //EndPoin para eliminar una exposicion
+        [HttpPost]
+        public IActionResult Eliminar(int id)
+        {
+            if (id <= 0)
+            {
+                TempData["Error"] = "ID inválido.";
+                return RedirectToAction("exposicion_admin");
+            }
+
+            try
+            {
+                using (var conn = _conexionGaleria.AbrirConexion())
+                {
+                    if (conn.State != System.Data.ConnectionState.Open)
+                        conn.Open();
+
+                    string usuarioModificacion = User.Identity.IsAuthenticated ? User.Identity.Name : "Administardor";
+
+                    Console.WriteLine("Conectado a la base de datos. Eliminando exposición ID: " + id);
+
+                    string queryEliminarRelacion = "DELETE FROM exposicion_obra WHERE id_exposicion = @id_exposicion";
+                    using (var cmdRel = new MySqlCommand(queryEliminarRelacion, conn))
+                    {
+                        cmdRel.Parameters.AddWithValue("@id_exposicion", id);
+                        cmdRel.ExecuteNonQuery();
+                    }
+
+                    string queryEliminar = "DELETE FROM exposicion WHERE id_exposicion = @id_exposicion";
+                    using (var cmdEliminar = new MySqlCommand(queryEliminar, conn))
+                    {
+                        cmdEliminar.Parameters.AddWithValue("@id_exposicion", id);
+                        int rowsAffected = cmdEliminar.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            // Registrar la eliminación en historial
+                            string queryHistorial = @"
+                        INSERT INTO historial_exposicion (id_exposicion, usuario_modificacion, fecha_modificacion, detalles) 
+                        VALUES (@id_exposicion, @usuario_modificacion, NOW(), @detalles)";
+
+                            using (var histCmd = new MySqlCommand(queryHistorial, conn))
+                            {
+                                histCmd.Parameters.AddWithValue("@id_exposicion", id);
+                                histCmd.Parameters.AddWithValue("@usuario_modificacion", usuarioModificacion);
+                                histCmd.Parameters.AddWithValue("@detalles", "Se eliminó la exposición");
+                                histCmd.ExecuteNonQuery();
+                            }
+
+                            TempData["Success"] = "Exposición eliminada correctamente.";
+                        }
+                        else
+                        {
+                            TempData["Error"] = "No se encontró la exposición o no se pudo eliminar.";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al eliminar la exposición: " + ex.Message;
+            }
+
+            return RedirectToAction("exposicion_admin");
+        }
+
+
+
         [HttpPost]
         public IActionResult EliminarObraDeExposicion(int exposicionId, int obraId)
         {
@@ -354,60 +449,6 @@ namespace GaleriaArte.Controllers
                 TempData["MensajeError"] = "Error al eliminar la obra de la exposición: " + ex.Message;
                 return RedirectToAction("AgregarObra", new { exposicionId = exposicionId });
             }
-        }
-
-        //EndPoin para eliminar una exposicion
-        [HttpPost]
-        public IActionResult Eliminar(int id)
-        {
-            if (id <= 0)
-            {
-                TempData["Error"] = "ID inválido.";
-                return RedirectToAction("exposicion_admin");
-            }
-
-            try
-            {
-                using (var conn = _conexionGaleria.AbrirConexion())
-                {
-                    if (conn.State != System.Data.ConnectionState.Open)
-                        conn.Open();
-
-                    Console.WriteLine("Conectado a la base de datos. Eliminando exposición ID: " + id);
-
-                    string queryEliminarRelacion = "DELETE FROM exposicion_obra WHERE id_exposicion = @id_exposicion";
-                    using (var cmdRel = new MySqlCommand(queryEliminarRelacion, conn))
-                    {
-                        cmdRel.Parameters.AddWithValue("@id_exposicion", id);
-                        cmdRel.ExecuteNonQuery();
-                    }
-
-                    string queryEliminar = "DELETE FROM exposicion WHERE id_exposicion = @id_exposicion";
-                    using (var cmdEliminar = new MySqlCommand(queryEliminar, conn))
-                    {
-                        cmdEliminar.Parameters.AddWithValue("@id_exposicion", id);
-                        int rowsAffected = cmdEliminar.ExecuteNonQuery();
-
-                        if (rowsAffected > 0)
-                        {
-                            TempData["Success"] = "Exposición eliminada correctamente.";
-                            Console.WriteLine("Exposición eliminada correctamente.");
-                        }
-                        else
-                        {
-                            TempData["Error"] = "No se encontró la exposición o no se pudo eliminar.";
-                            Console.WriteLine("No se encontró la exposición.");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = "Error al eliminar la exposición: " + ex.Message;
-                Console.WriteLine("Error al eliminar: " + ex.Message);
-            }
-
-            return RedirectToAction("exposicion_admin");
         }
 
 
@@ -478,7 +519,7 @@ namespace GaleriaArte.Controllers
 
         //EndPoints para usuarios
         [HttpGet]
-        public IActionResult ExposicionUser()
+        public IActionResult exposicion_user()
         {
             List<exposicion> exposicionesActivas = new List<exposicion>();
 
@@ -748,5 +789,7 @@ namespace GaleriaArte.Controllers
             }
             return obras;
         }
+
+
     }
 }
