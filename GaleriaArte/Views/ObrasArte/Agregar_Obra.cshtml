@@ -38,7 +38,7 @@
     </div>
     <div class="mb-3">
         <label class="form-label">Estado</label>
-        <input type="number" asp-for="estado" value="1" min="1" class="form-control">
+        <input type="number" asp-for="estado" value="1 || 0" min="0" max="1" class="form-control">
     </div>
     
     <button type="submit" class="btn btn-primary">Agregar</button>

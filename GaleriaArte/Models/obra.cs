@@ -10,7 +10,6 @@
         public int ano_creacio { get; set; }
         public decimal precio { get; set; }
         public string num_registro {  get; set; }
-        
         public string descripcion { get; set; }
         public string imagen_url { get; set; }
         public int estado {  get; set; }

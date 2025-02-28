@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 
+
 namespace GaleriaArte.Controllers
 {
     public class locacionController : Controller
@@ -19,6 +20,9 @@ namespace GaleriaArte.Controllers
 
             try
             {
+                
+
+
                 using (var conn = conexion.AbrirConexion())
                 {
                     string query = "SELECT * FROM locacion";
@@ -58,6 +62,9 @@ namespace GaleriaArte.Controllers
         {
             try
             {
+
+               
+
                 using (var conn = conexion.AbrirConexion())
                 {
                     

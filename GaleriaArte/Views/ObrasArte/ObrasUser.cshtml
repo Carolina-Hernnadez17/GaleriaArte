@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -46,7 +47,7 @@
                                     <p>
                                         Estado:
                                         <span class="@(obra.value.estado == 1 ? "estado-disponible" : "estado-no-disponible")">
-                                            @(obra.value.estado == 1 ? "Disponible" : "No Disponible")
+                                            @(obra.value.estado == 1 ? "Disponible" : obra.value.estado == 0 ? "No Disponible" : "No disponible")
                                         </span>
                                     </p>
                                    
@@ -84,7 +85,7 @@
                             <h5 class="card-title">@obra.titulo</h5>
                             <p class="card-text"><strong>Artista:</strong> @obra.nombre_artista</p>
                             <p class="card-text"><strong>Precio:</strong> $@obra.precio.ToString("N2")</p>
-                            <p>Año de creación: @obra.ano_creacio</p>
+                            <p class="card-text">Año de creación: @obra.ano_creacio</p>
                             <p class="card-text">
                                 <strong>Estado:</strong>
                                 <span class="estado-disponible-list">Disponible</span>
@@ -96,21 +97,21 @@
                 {
                     <a href="@Url.Action("ObraDetalle", "ObrasArte", new { id = obra.id_obra })"
                        class="card text-decoration-none">
-                        <div class="card disabled-card" data-bs-toggle="modal" data-bs-target="#modalObra_@obra.id_obra">
-                            <img src="@obra.imagen_url" alt="Imagen de @obra.titulo" class="card-img-top"
-                                 onerror="this.onerror=null; this.src='/images/default-art.jpg'">
-                            <div class="card-body">
-                                <h5 class="card-title">@obra.titulo</h5>
-                                <p class="card-text"><strong>Artista:</strong> @obra.nombre_artista</p>
-                                <p class="card-text"><strong>Precio:</strong> $@obra.precio.ToString("N2")</p>
-                                <p>Año de creación: @obra.ano_creacio</p>
-                                <p class="card-text">
-                                    <strong>Estado:</strong>
-                                    <span class="estado-no-disponible-list">No disponible</span>
-                                </p>
-                            </div>
+                        <img src="@obra.imagen_url" alt="Imagen de @obra.titulo" class="card-img-top"
+                             onerror="this.onerror=null; this.src='/images/default-art.jpg'">
+                        <div class="card-body align-self-center">
+                            <h5 class="card-title">@obra.titulo</h5>
+                            <p class="card-text"><strong>Artista:</strong> @obra.nombre_artista</p>
+                            <p class="card-text"><strong>Precio:</strong> $@obra.precio.ToString("N2")</p>
+                            <p class="card-text">Año de creación: @obra.ano_creacio</p>
+                            <p class="card-text">
+                                <strong>Estado:</strong>
+                                <span class="estado-no-disponible-list">No disponible</span>
+                            </p>
                         </div>
                     </a>
+
+                   
                 }
             </div>
         }
