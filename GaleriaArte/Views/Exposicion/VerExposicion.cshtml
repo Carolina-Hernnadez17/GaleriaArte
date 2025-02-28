@@ -1,5 +1,9 @@
 ﻿@model GaleriaArte.Models.exposicion
 
+@{
+    ViewData["Title"] = "Detalles de la Exposición";
+}
+
 <head>
     <link rel="stylesheet" href="~/css/locacionStyle.css" asp-append-version="true" />
     <link rel="stylesheet" href="/css_C/ExpocisionStyle.css" asp-append-version="true" />
@@ -62,10 +66,9 @@
         }
 
         <div class="text-center mt-4">
-            <button class="btn btn-primary btn-lg" onclick="window.close();">
-                <i class="fa-solid fa-arrow-left"></i> Cerrar
-            </button>
+            <a href="@Url.Action("exposicion_admin", "Exposicion")" class="btn btn-primary btn-lg">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </a>
         </div>
-
     </div>
 </div>
