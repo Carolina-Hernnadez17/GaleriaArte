@@ -10,7 +10,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark  border-bottom box-shadow">
             <div class="container-fluid">
                 <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">GaleriaArte</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -42,7 +42,7 @@
 
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link btn btn-danger text-white px-3" asp-controller="Login" asp-action="Logout">Cerrar Sesión</a>
+                            <a href="@Url.Action("login", "Login")" class="nav-link btn btn-danger text-white px-3" >Cerrar Sesión</a>
                         </li>
                     </ul>
                 </div>
