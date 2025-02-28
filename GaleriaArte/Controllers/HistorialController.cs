@@ -9,9 +9,9 @@ namespace GaleriaArte.Controllers
         private readonly ConexionGallery _conexionGaleria;
 
         // Usando el constructor normal para la inyección de dependencias
-        public HistorialController(ConexionGallery conexionGaleria)
+        public HistorialController()
         {
-            _conexionGaleria = conexionGaleria;
+            _conexionGaleria = new ConexionGallery();
         }
 
         [HttpGet]
@@ -20,7 +20,7 @@ namespace GaleriaArte.Controllers
             var historial = ObtenerHistorialExposiciones();
             return View(historial);
         }
-
+        [HttpPost]
         private List<historial_exposicion> ObtenerHistorialExposiciones()
         {
             var historial = new List<historial_exposicion>();
