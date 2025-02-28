@@ -1,0 +1,71 @@
+﻿@model GaleriaArte.Models.exposicion
+
+<head>
+    <link rel="stylesheet" href="~/css/locacionStyle.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/css_C/ExpocisionStyle.css" asp-append-version="true" />
+</head>
+
+<div class="container mt-4">
+    <div class="card shadow-lg p-4 bg-black">
+        <h2 class="text-center text-white fw-bold mb-3">
+            <i class="fa-solid fa-palette"></i> @Model.titulo_exposicion
+        </h2>
+        <p class="text-center text-muted mb-4">@Model.descripcion</p>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong><i class="fa-solid fa-calendar-day"></i> Fecha Inicio:</strong> @Model.fecha_inicio.ToString("dd/MM/yyyy")</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong><i class="fa-solid fa-calendar-check"></i> Fecha Cierre:</strong> @Model.fecha_cierre.ToString("dd/MM/yyyy")</p>
+            </div>
+        </div>
+
+        <p class="fw-bold">
+            <i class="fa-solid fa-circle-info"></i> Estado:
+            <span class="badge bg-@(Model.estado == "activa" ? "success" : (Model.estado == "programada" ? "warning" : "danger"))">
+                @Model.estado.ToUpper()
+            </span>
+        </p>
+
+        <hr />
+
+        <h3 class="text-center mt-4">
+            <i class="fa-solid fa-image"></i> Obras en la Exposición
+        </h3>
+
+        @if (Model.Obras != null && Model.Obras.Any())
+        {
+            <table class="table table-bordered table-hover mt-3 shadow-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th><i class="fa-solid fa-paint-brush"></i> Título</th>
+                        <th><i class="fa-solid fa-user"></i> Artista</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var obra in Model.Obras)
+                    {
+                        <tr>
+                            <td>@obra.titulo</td>
+                            <td>@obra.nombre_artista</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-warning text-center mt-3">
+                <i class="fa-solid fa-exclamation-triangle"></i> No hay obras en esta exposición.
+            </div>
+        }
+
+        <div class="text-center mt-4">
+            <button class="btn btn-primary btn-lg" onclick="window.close();">
+                <i class="fa-solid fa-arrow-left"></i> Cerrar
+            </button>
+        </div>
+
+    </div>
+</div>

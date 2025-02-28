@@ -18,7 +18,6 @@ namespace GaleriaArte.Controllers
             var exposiciones = ObtenerExposicionesPublicadas();
         }
 
-        // Endpoint que muestra todas las exposiciones
         public IActionResult exposicion_admin()
         {
             List<exposicion> exposiciones = new List<exposicion>();
@@ -27,18 +26,17 @@ namespace GaleriaArte.Controllers
             {
                 if (conn.State != System.Data.ConnectionState.Open) conn.Open();
 
-                // Obtener la fecha actual
                 DateTime fechaActual = DateTime.Now;
 
                 // Actualizar estados de exposiciones antes de mostrarlas
                 string updateQuery = @"
-                    UPDATE exposicion 
-                    SET estado = 
-                        CASE 
-                            WHEN fecha_inicio <= @fechaActual AND fecha_cierre >= @fechaActual THEN 'activo'
-                            WHEN fecha_cierre < @fechaActual THEN 'finalizada'
-                            ELSE estado
-                        END";
+            UPDATE exposicion 
+            SET estado = 
+                CASE 
+                    WHEN fecha_inicio <= @fechaActual AND fecha_cierre >= @fechaActual THEN 'activo'
+                    WHEN fecha_cierre < @fechaActual THEN 'finalizada'
+                    ELSE estado
+                END";
 
                 using (var updateCmd = new MySqlCommand(updateQuery, conn))
                 {
@@ -46,8 +44,12 @@ namespace GaleriaArte.Controllers
                     updateCmd.ExecuteNonQuery();
                 }
 
-                // Consultar las exposiciones actualizadas
-                string query = "SELECT id_exposicion, id_locacion, titulo_exposicion, descripcion, fecha_inicio, fecha_cierre, estado FROM exposicion";
+                // Consulta para obtener las exposiciones con la cantidad de obras asociadas
+                string query = @"
+            SELECT e.id_exposicion, e.id_locacion, e.titulo_exposicion, e.descripcion, 
+                   e.fecha_inicio, e.fecha_cierre, e.estado,
+                   (SELECT COUNT(*) FROM exposicion_obra eo WHERE eo.id_exposicion = e.id_exposicion) AS cantidad_obras
+            FROM exposicion e";
 
                 using (var cmd = new MySqlCommand(query, conn))
                 using (var reader = cmd.ExecuteReader())
@@ -62,7 +64,8 @@ namespace GaleriaArte.Controllers
                             descripcion = reader["descripcion"] != DBNull.Value ? reader.GetString("descripcion") : "",
                             fecha_inicio = reader.GetDateTime("fecha_inicio"),
                             fecha_cierre = reader.GetDateTime("fecha_cierre"),
-                            estado = reader.GetString("estado")
+                            estado = reader.GetString("estado"),
+                            CantidadObras = reader.GetInt32("cantidad_obras") // Agregar cantidad de obras a la instancia
                         });
                     }
                 }
@@ -71,8 +74,242 @@ namespace GaleriaArte.Controllers
             return View(exposiciones);
         }
 
+        public IActionResult VerExposicion_user(int id)
+        {
+            exposicion exposicion = null;
+            List<obra> obras = new List<obra>();
+
+            using (MySqlConnection conexion = new ConexionGallery().AbrirConexion())
+            {
+                // Obtener la exposición por ID
+                string queryExposicion = "SELECT * FROM exposicion WHERE id_exposicion = @id";
+                using (MySqlCommand cmd = new MySqlCommand(queryExposicion, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            exposicion = new exposicion
+                            {
+                                id_exposicion = Convert.ToInt32(reader["id_exposicion"]),
+                                titulo_exposicion = reader["titulo_exposicion"].ToString(),
+                                descripcion = reader["descripcion"].ToString(),
+                                fecha_inicio = Convert.ToDateTime(reader["fecha_inicio"]),
+                                fecha_cierre = Convert.ToDateTime(reader["fecha_cierre"]),
+                                estado = reader["estado"].ToString()
+                            };
+                        }
+                    }
+                }
+
+                if (exposicion != null)
+                {
+                    // Obtener las obras asociadas a la exposición
+                    string queryObras = @"
+                SELECT o.* FROM obra o
+                INNER JOIN exposicion_obra eo ON o.id_obra = eo.id_obra
+                WHERE eo.id_exposicion = @id";
+
+                    using (MySqlCommand cmdObras = new MySqlCommand(queryObras, conexion))
+                    {
+                        cmdObras.Parameters.AddWithValue("@id", id);
+                        using (MySqlDataReader readerObras = cmdObras.ExecuteReader())
+                        {
+                            while (readerObras.Read())
+                            {
+                                obras.Add(new obra
+                                {
+                                    id_obra = Convert.ToInt32(readerObras["id_obra"]),
+                                    titulo = readerObras["titulo"].ToString(),
+                                    nombre_artista = readerObras["nombre_artista"].ToString()
+                                });
+                            }
+                        }
+                    }
+
+                    exposicion.Obras = obras;
+                }
+            }
+
+            if (exposicion == null)
+            {
+                return NotFound();
+            }
+
+            return View(exposicion);
+        }
+
+
+
+        public IActionResult VerExposicion(int id)
+        {
+            exposicion exposicion = null;
+            List<obra> obras = new List<obra>();
+
+            using (MySqlConnection conexion = new ConexionGallery().AbrirConexion())
+            {
+                // Obtener la exposición por ID
+                string queryExposicion = "SELECT * FROM exposicion WHERE id_exposicion = @id";
+                using (MySqlCommand cmd = new MySqlCommand(queryExposicion, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            exposicion = new exposicion
+                            {
+                                id_exposicion = Convert.ToInt32(reader["id_exposicion"]),
+                                titulo_exposicion = reader["titulo_exposicion"].ToString(),
+                                descripcion = reader["descripcion"].ToString(),
+                                fecha_inicio = Convert.ToDateTime(reader["fecha_inicio"]),
+                                fecha_cierre = Convert.ToDateTime(reader["fecha_cierre"]),
+                                estado = reader["estado"].ToString()
+                            };
+                        }
+                    }
+                }
+
+                if (exposicion != null)
+                {
+                    // Obtener las obras asociadas a la exposición
+                    string queryObras = @"
+                SELECT o.* FROM obra o
+                INNER JOIN exposicion_obra eo ON o.id_obra = eo.id_obra
+                WHERE eo.id_exposicion = @id";
+
+                    using (MySqlCommand cmdObras = new MySqlCommand(queryObras, conexion))
+                    {
+                        cmdObras.Parameters.AddWithValue("@id", id);
+                        using (MySqlDataReader readerObras = cmdObras.ExecuteReader())
+                        {
+                            while (readerObras.Read())
+                            {
+                                obras.Add(new obra
+                                {
+                                    id_obra = Convert.ToInt32(readerObras["id_obra"]),
+                                    titulo = readerObras["titulo"].ToString(),
+                                    nombre_artista = readerObras["nombre_artista"].ToString()
+                                });
+                            }
+                        }
+                    }
+
+                    exposicion.Obras = obras;
+                }
+            }
+
+            if (exposicion == null)
+            {
+                return NotFound();
+            }
+
+            return View(exposicion);
+        }
+
+
+
+        // Método para cambiar el estado de una exposición
+        [HttpPost]
+        public IActionResult CambiarEstado(int id_exposicion, string nuevoEstado)
+        {
+            using (var conexion = _conexionGaleria.AbrirConexion())
+            {
+                try
+                {
+                    if (conexion.State != System.Data.ConnectionState.Open) conexion.Open();
+
+                    // Verificar si la exposición tiene al menos una obra
+                    string consultaObras = "SELECT COUNT(*) FROM exposicion_obra WHERE id_exposicion = @id";
+                    using (var cmd = new MySqlCommand(consultaObras, conexion))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id_exposicion);
+                        int cantidadObras = Convert.ToInt32(cmd.ExecuteScalar());
+
+                        if (nuevoEstado.ToLower() == "activo" && cantidadObras == 0)
+                        {
+                            TempData["Error"] = "No puedes activar la exposición sin agregar al menos una obra.";
+                            return RedirectToAction("exposicion_admin");
+                        }
+                    }
+
+                    // Actualizar el estado de la exposición si la validación se pasó
+                    string actualizarEstado = "UPDATE exposicion SET estado = @estado WHERE id_exposicion = @id";
+                    using (var cmd = new MySqlCommand(actualizarEstado, conexion))
+                    {
+                        cmd.Parameters.AddWithValue("@estado", nuevoEstado);
+                        cmd.Parameters.AddWithValue("@id", id_exposicion);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    TempData["Mensaje"] = "Estado actualizado correctamente.";
+                    return RedirectToAction("exposicion_admin");
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = "Error al cambiar el estado de la exposición.";
+                    return RedirectToAction("exposicion_admin");
+                }
+            }
+        }
+
+        // Endpoint que muestra todas las exposiciones
+        //public IActionResult exposicion_admin()
+        //{
+        //    List<exposicion> exposiciones = new List<exposicion>();
+
+        //    using (var conn = _conexionGaleria.AbrirConexion())
+        //    {
+        //        if (conn.State != System.Data.ConnectionState.Open) conn.Open();
+
+        //        // Obtener la fecha actual
+        //        DateTime fechaActual = DateTime.Now;
+
+        //        // Actualizar estados de exposiciones antes de mostrarlas
+        //        string updateQuery = @"
+        //            UPDATE exposicion 
+        //            SET estado = 
+        //                CASE 
+        //                    WHEN fecha_inicio <= @fechaActual AND fecha_cierre >= @fechaActual THEN 'activo'
+        //                    WHEN fecha_cierre < @fechaActual THEN 'finalizada'
+        //                    ELSE estado
+        //                END";
+
+        //        using (var updateCmd = new MySqlCommand(updateQuery, conn))
+        //        {
+        //            updateCmd.Parameters.AddWithValue("@fechaActual", fechaActual);
+        //            updateCmd.ExecuteNonQuery();
+        //        }
+
+        //        // Consultar las exposiciones actualizadas
+        //        string query = "SELECT id_exposicion, id_locacion, titulo_exposicion, descripcion, fecha_inicio, fecha_cierre, estado FROM exposicion";
+
+        //        using (var cmd = new MySqlCommand(query, conn))
+        //        using (var reader = cmd.ExecuteReader())
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                exposiciones.Add(new exposicion
+        //                {
+        //                    id_exposicion = reader.GetInt32("id_exposicion"),
+        //                    id_locacion = reader.GetInt32("id_locacion"),
+        //                    titulo_exposicion = reader.GetString("titulo_exposicion"),
+        //                    descripcion = reader["descripcion"] != DBNull.Value ? reader.GetString("descripcion") : "",
+        //                    fecha_inicio = reader.GetDateTime("fecha_inicio"),
+        //                    fecha_cierre = reader.GetDateTime("fecha_cierre"),
+        //                    estado = reader.GetString("estado")
+        //                });
+        //            }
+        //        }
+        //    }
+
+        //    return View(exposiciones);
+        //}
+
 
         // Endpoint para agregar una nueva exposición
+
         [HttpGet]
         public IActionResult Agregar()
         {
@@ -416,8 +653,6 @@ namespace GaleriaArte.Controllers
             return RedirectToAction("exposicion_admin");
         }
 
-
-
         [HttpPost]
         public IActionResult EliminarObraDeExposicion(int exposicionId, int obraId)
         {
@@ -450,6 +685,7 @@ namespace GaleriaArte.Controllers
                 return RedirectToAction("AgregarObra", new { exposicionId = exposicionId });
             }
         }
+
 
 
         // Endpoint de filtrado
@@ -569,6 +805,9 @@ namespace GaleriaArte.Controllers
 
 
         // Métodos auxiliares
+
+
+
         private bool VerificarObrasAsociadas(int id_exposicion)
         {
             try
@@ -625,19 +864,6 @@ namespace GaleriaArte.Controllers
         }
 
 
-        private void ActualizarExposicion(exposicion expo)
-        {
-            using (var conexion = new ConexionGallery().AbrirConexion())
-            {
-                string query = "UPDATE exposicion SET estado = @estado WHERE id_exposicion = @idExposicion";
-                using (var cmd = new MySqlCommand(query, conexion))
-                {
-                    cmd.Parameters.AddWithValue("@estado", expo.estado);
-                    cmd.Parameters.AddWithValue("@idExposicion", expo.id_exposicion);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
 
         private List<exposicion> ObtenerExposicionesPublicadas()
         {

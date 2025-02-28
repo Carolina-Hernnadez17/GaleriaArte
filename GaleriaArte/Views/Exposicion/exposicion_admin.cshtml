@@ -1,6 +1,4 @@
-﻿
-@model List<GaleriaArte.Models.exposicion>
-
+﻿@model List<GaleriaArte.Models.exposicion>
 
 @{
     ViewData["Title"] = "Exposiciones";
@@ -10,7 +8,6 @@
     <link rel="stylesheet" href="~/css/locacionStyle.css" asp-append-version="true" />
     <link rel="stylesheet" href="/css_C/ExpocisionStyle.css" asp-append-version="true" />
 </head>
-
 
 <div class="container-AddLocation">
     <div>
@@ -71,6 +68,8 @@
             <tbody>
                 @foreach (var exposicion in Model)
                 {
+                    // Declaramos la variable para saber si tiene obras asociadas
+                    var tieneObras = (exposicion.Obras != null && exposicion.Obras.Count > 0);
                     <tr>
                         <td>@exposicion.titulo_exposicion</td>
                         <td>@exposicion.descripcion</td>
@@ -80,6 +79,7 @@
                         <td class="btn-container">
                             @if (!string.IsNullOrEmpty(exposicion.estado) && exposicion.estado.Trim().ToLower() == "programada")
                             {
+                                <!-- Botones de acciones básicas -->
                                 <form asp-controller="Exposicion" asp-action="AgregarObra" method="get">
                                     <input type="hidden" name="exposicionId" value="@exposicion.id_exposicion" />
                                     <button type="submit" class="btn btn-tabla">Agregar</button>
@@ -90,8 +90,24 @@
                                     <input type="hidden" name="id" value="@exposicion.id_exposicion" />
                                     <button type="submit" class="btn btn-tabla btn-sm">Eliminar</button>
                                 </form>
+                                <form asp-controller="Exposicion" asp-action="CambiarEstado" method="post" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas activar esta exposición?');">
+                                    <input type="hidden" name="id_exposicion" value="@exposicion.id_exposicion" />
+                                    <input type="hidden" name="nuevoEstado" value="activo" />
+                                    <button type="submit" class="btn btn-success" @(exposicion.CantidadObras == 0 ? "disabled" : "")>
+                                        Activar
+                                    </button>
+                                </form>
+
+                            }
+                            else if (exposicion.estado.Trim().ToLower() == "activo" || exposicion.estado.Trim().ToLower() == "finalizada")
+                            {
+                                <a href="@Url.Action("VerExposicion", "Exposicion", new { id = exposicion.id_exposicion })" class="btn btn-tabla">
+                                    Ver
+                                </a>
+
                             }
                         </td>
+
                     </tr>
                 }
             </tbody>

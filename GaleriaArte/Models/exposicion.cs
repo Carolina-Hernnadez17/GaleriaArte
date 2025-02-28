@@ -24,7 +24,11 @@ namespace GaleriaArte.Models
         [Required]
         public DateTime fecha_cierre { get; set; }
 
-        public string estado {  get; set; }
+        public string estado { get; set; }
+
+        public List<obra> Obras { get; set; }
+
+        public int CantidadObras { get; set; }
 
     }
 }
