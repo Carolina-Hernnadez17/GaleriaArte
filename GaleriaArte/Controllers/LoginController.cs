@@ -452,9 +452,9 @@ namespace GaleriaArte.Controllers
                         MySqlCommand getUserIdCmd = new MySqlCommand(getUserIdQuery, conn);
                         int userId = Convert.ToInt32(getUserIdCmd.ExecuteScalar());
 
-                        //return Json(new { success = true, userId = userId });
+                        return Json(new { success = true, userId = userId });
                         //return RedirectToAction("PreguntasSeguridad", new { userId = userId });
-                        return RedirectToAction("PreguntasSeguridad", new RouteValueDictionary { { "userId", userId } });
+                       // return RedirectToAction("PreguntasSeguridad", new RouteValueDictionary { { "userId", userId } });
 
                     }
 

@@ -119,71 +119,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-     @* <script>
-             $(document).ready(function () {
-            // Cargar país guardado en localStorage (si existe)
-            if (localStorage.getItem("selectedCountry")) {
-                $("#paisSelect").val(localStorage.getItem("selectedCountry"));
-            }
-
-            $("#registrationFormm").submit(function (event) {
-                event.preventDefault(); // Evita que la página se recargue
-
-                var formData = $(this).serialize(); // Obtiene los datos del formulario
-                var selectedCountry = $("#paisSelect").val(); // Guarda la selección actual
-                localStorage.setItem("selectedCountry", selectedCountry); // Guarda el país en localStorage
-
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("registro_user", "Login")",
-                    data: formData,
-                    success: function (response) {
-                        if ($(response).find("#form-container").length) {
-                            // Si hay errores, actualiza el formulario sin cambiar la selección del país
-                            $("#form-container").html($(response).find("#form-container").html());
-                            $("#paisSelect").val(localStorage.getItem("selectedCountry")); // Restablece el país
-                        } else {
-                            localStorage.removeItem("selectedCountry"); // Limpiar país si el registro es exitoso
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Registro Exitoso',
-                                text: 'Te has registrado correctamente, tu cuenta esta activada.',
-                            }).then(() => {
-                               window.location.href = '@Url.Action("PreguntasSeguridad", "Login")' + '?userId=' + response.userId;
-                            });
-                        }
-                    },
-                    error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Ocurrió un problema, intenta nuevamente.',
-                        });
-                    }
-                });
-            });
-
-            // Manejo del cambio de país
-            $("#paisSelect").change(function () {
-                const pais = $(this).val();
-                localStorage.setItem("selectedCountry", pais); // Guarda la selección cada vez que cambia
-
-                const telefonoInput = $("#telefonoInput");
-
-                switch (pais) {
-                    case 'Guatemala': telefonoInput.attr("placeholder", "+502 4XXX XXXX").val("+502 ").attr("maxlength", "13"); break;
-                    case 'El Salvador': telefonoInput.attr("placeholder", "+503 7XXX XXXX").val("+503 ").attr("maxlength", "13"); break;
-                    case 'Honduras': telefonoInput.attr("placeholder", "+504 9XXX XXXX").val("+504 ").attr("maxlength", "13"); break;
-                    case 'Nicaragua': telefonoInput.attr("placeholder", "+505 8XXX XXXX").val("+505 ").attr("maxlength", "13"); break;
-                    case 'Costa Rica': telefonoInput.attr("placeholder", "+506 8XXX XXXX").val("+506 ").attr("maxlength", "13"); break;
-                    case 'Panamá': telefonoInput.attr("placeholder", "+507 6XXX XXXX").val("+507 ").attr("maxlength", "13"); break;
-                    default: telefonoInput.attr("placeholder", "Teléfono").val("").removeAttr("maxlength"); break;
-                }
-            });
-        });
-
-
-    </script> *@
+     
     <script>
         $(document).ready(function () {
             // Cargar país guardado en localStorage (si existe)
